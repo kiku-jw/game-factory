@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { RunStore } from '../engine/RunStore.js';
 import { formatShareText } from '../../shared/seedCodec.js';
-import type { ExportChallengeInput, ExportChallengeOutput } from '../types/index.js';
+import type { ExportChallengeOutput } from '../types/index.js';
 
 // =============================================================================
 // INPUT SCHEMA

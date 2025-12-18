@@ -1,0 +1,80 @@
+{
+    "id": "fantasy-dragon-keep",
+    "name": "Dragon Keep",
+    "description": "Infiltrate the fortress of an ancient dragon to retrieve a stolen artifact.",
+    "genre": "fantasy",
+    "difficulty": "hard",
+    "featured": false,
+    "world": {
+        "setting": "A volcanic mountain fortress occupied by a dragon",
+        "era": "Age of Dragons",
+        "atmosphere": "Dangerous, epic, treasure-filled",
+        "tags": [
+            "dragon",
+            "heist",
+            "treasure",
+            "stealth"
+        ]
+    },
+    "mechanics": {
+        "resourcePressure": "high",
+        "threatEscalation": "high",
+        "puzzleFrequency": "low",
+        "npcInteraction": "low"
+    },
+    "safety": {
+        "maxViolenceLevel": 2,
+        "forbiddenThemes": [
+            "occult",
+            "gore"
+        ],
+        "deathStyle": "fade"
+    },
+    "initialScene": {
+        "chapterId": 1,
+        "title": "The Approach",
+        "narrative": "The volcanic peak looms above, smoke curling from its crater. The dragon's keep is carved into the mountainside, ancient and imposing. You can see the main gate far above, guarded by creatures in the dragon's service. But local rumors speak of hidden passages. The artifact your village needs to survive lies within.",
+        "choices": [
+            {
+                "id": "c1",
+                "label": "Search for a hidden entrance",
+                "risk": null,
+                "cost": {
+                    "type": "turn",
+                    "amount": 1
+                }
+            },
+            {
+                "id": "c2",
+                "label": "Observe the guard patterns",
+                "risk": null,
+                "cost": null
+            },
+            {
+                "id": "c3",
+                "label": "Attempt to climb the cliffs",
+                "risk": 60,
+                "cost": null
+            }
+        ]
+    },
+    "encounters": {
+        "threats": [
+            "guard-patrol",
+            "trap-floor",
+            "dragon-shadow",
+            "lava-flow"
+        ],
+        "discoveries": [
+            "treasure-room",
+            "secret-tunnel",
+            "sleeping-guard",
+            "artifact-location"
+        ],
+        "puzzles": [
+            "lock-mechanism",
+            "pressure-plates",
+            "distraction-puzzle"
+        ]
+    }
+}

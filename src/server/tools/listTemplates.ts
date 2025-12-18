@@ -1,15 +1,15 @@
 // Game Factory - list_templates Tool Handler
 
 import { z } from 'zod';
-import { loadTemplates, getTemplate } from '../engine/TemplateManager.js';
-import type { ListTemplatesInput, ListTemplatesOutput, TemplateInfo, Genre } from '../types/index.js';
+import { loadTemplates } from '../engine/TemplateManager.js';
+import type { ListTemplatesOutput, TemplateInfo, Genre } from '../types/index.js';
 
 // =============================================================================
 // INPUT SCHEMA
 // =============================================================================
 
 export const ListTemplatesInputSchema = z.object({
-  genre: z.enum(['fantasy', 'sci-fi', 'mystery', 'horror-lite']).optional(),
+  genre: z.enum(['fantasy', 'sci-fi', 'mystery', 'horror-lite', 'cyberpunk', 'surreal']).optional(),
   featured: z.boolean().optional(),
   limit: z.number().int().positive().max(50).optional(),
 });
@@ -26,7 +26,7 @@ export const listTemplatesToolDefinition = {
     properties: {
       genre: {
         type: 'string',
-        enum: ['fantasy', 'sci-fi', 'mystery', 'horror-lite'],
+        enum: ['fantasy', 'sci-fi', 'mystery', 'horror-lite', 'cyberpunk', 'surreal'],
         description: 'Filter by genre',
       },
       featured: {

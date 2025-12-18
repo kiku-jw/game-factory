@@ -8,6 +8,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
+  CallToolResult,
 } from '@modelcontextprotocol/sdk/types.js';
 
 import { initTemplates } from './engine/TemplateManager.js';
@@ -46,6 +47,33 @@ const tools = [
 ];
 
 // =============================================================================
+// HELPERS
+// =============================================================================
+
+function createToolResult(
+  structuredContent: unknown,
+  meta?: unknown
+): CallToolResult {
+  const result: CallToolResult = {
+    content: [{ type: 'text', text: JSON.stringify(structuredContent) }],
+  };
+
+  // Add _meta for widget rendering (OpenAI Apps SDK specific)
+  if (meta !== undefined) {
+    (result as Record<string, unknown>)['_meta'] = meta;
+  }
+
+  return result;
+}
+
+function createErrorResult(message: string): CallToolResult {
+  return {
+    content: [{ type: 'text', text: JSON.stringify({ error: message }) }],
+    isError: true,
+  };
+}
+
+// =============================================================================
 // HANDLERS
 // =============================================================================
 
@@ -62,7 +90,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 });
 
 // Handle tool calls
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
+server.setRequestHandler(CallToolRequestSchema, async (request): Promise<CallToolResult> => {
   const { name, arguments: args } = request.params;
 
   console.error(`[Game Factory] Tool called: ${name}`);
@@ -71,41 +99,27 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     switch (name) {
       case 'list_templates': {
         const result = handleListTemplates(args);
-        return {
-          content: [{ type: 'text', text: JSON.stringify(result.structuredContent) }],
-          _meta: result._meta,
-        };
+        return createToolResult(result.structuredContent, result._meta);
       }
 
       case 'start_run': {
         const result = handleStartRun(args);
-        return {
-          content: [{ type: 'text', text: JSON.stringify(result.structuredContent) }],
-          _meta: result._meta,
-        };
+        return createToolResult(result.structuredContent, result._meta);
       }
 
       case 'act': {
         const result = handleAct(args);
-        return {
-          content: [{ type: 'text', text: JSON.stringify(result.structuredContent) }],
-          _meta: result._meta,
-        };
+        return createToolResult(result.structuredContent, result._meta);
       }
 
       case 'end_run': {
         const result = handleEndRun(args);
-        return {
-          content: [{ type: 'text', text: JSON.stringify(result.structuredContent) }],
-          _meta: result._meta,
-        };
+        return createToolResult(result.structuredContent, result._meta);
       }
 
       case 'export_challenge': {
         const result = handleExportChallenge(args);
-        return {
-          content: [{ type: 'text', text: JSON.stringify(result.structuredContent) }],
-        };
+        return createToolResult(result.structuredContent);
       }
 
       default:
@@ -114,11 +128,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     console.error(`[Game Factory] Error: ${message}`);
-
-    return {
-      content: [{ type: 'text', text: JSON.stringify({ error: message }) }],
-      isError: true,
-    };
+    return createErrorResult(message);
   }
 });
 

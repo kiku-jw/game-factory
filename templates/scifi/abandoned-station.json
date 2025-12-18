@@ -1,0 +1,77 @@
+{
+    "id": "scifi-abandoned-station",
+    "name": "Abandoned Station",
+    "description": "Wake up alone on a derelict space station. Something went wrong.",
+    "genre": "sci-fi",
+    "difficulty": "normal",
+    "featured": true,
+    "world": {
+        "setting": "Research Station Artemis, orbiting Neptune",
+        "era": "2347 AD",
+        "atmosphere": "Tense, isolated, mysterious",
+        "tags": [
+            "space",
+            "survival",
+            "mystery",
+            "isolation"
+        ]
+    },
+    "mechanics": {
+        "resourcePressure": "high",
+        "threatEscalation": "medium",
+        "puzzleFrequency": "low",
+        "npcInteraction": "none"
+    },
+    "safety": {
+        "maxViolenceLevel": 2,
+        "forbiddenThemes": [
+            "occult",
+            "gore"
+        ],
+        "deathStyle": "fade"
+    },
+    "initialScene": {
+        "chapterId": 1,
+        "title": "Emergency Wake",
+        "narrative": "Emergency lights pulse red as you emerge from cryo-sleep. The station is silent except for the hum of failing life support. Your heads-up display flickers, showing critical system alerts. Through the frost on your pod, you see the med-bay is empty. The last thing you remember is the routine journey to Neptune. Now, something is very wrong.",
+        "choices": [
+            {
+                "id": "c1",
+                "label": "Check the nearby terminal for status",
+                "risk": null,
+                "cost": null
+            },
+            {
+                "id": "c2",
+                "label": "Search med-bay for supplies",
+                "risk": null,
+                "cost": null
+            },
+            {
+                "id": "c3",
+                "label": "Try to access the main corridor",
+                "risk": 70,
+                "cost": null
+            }
+        ]
+    },
+    "encounters": {
+        "threats": [
+            "hull-breach",
+            "system-failure",
+            "quarantine-lockdown",
+            "oxygen-depletion"
+        ],
+        "discoveries": [
+            "crew-log",
+            "emergency-kit",
+            "access-card",
+            "escape-pod-location"
+        ],
+        "puzzles": [
+            "door-override",
+            "power-reroute",
+            "communication-repair"
+        ]
+    }
+}

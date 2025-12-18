@@ -8,7 +8,6 @@ interface ConsequenceCardProps {
   // From structuredContent
   turn: number;
   consequences: ConsequenceDisplay[];
-  failureSummary: string;
 
   // From _meta
   runRef: string;
@@ -22,7 +21,6 @@ interface ConsequenceCardProps {
 export function ConsequenceCard({
   turn,
   consequences,
-  failureSummary,
   runRef,
   failureNarrative,
   onConsequenceResolved,
@@ -88,11 +86,10 @@ export function ConsequenceCard({
             key={consequence.id}
             onClick={() => handleConsequence(consequence.id)}
             disabled={loading}
-            className={`w-full px-4 py-3 text-left rounded-lg border transition-colors ${
-              loading && selectedId === consequence.id
+            className={`w-full px-4 py-3 text-left rounded-lg border transition-colors ${loading && selectedId === consequence.id
                 ? 'bg-yellow-500 text-white border-yellow-500'
                 : 'bg-surface-secondary hover:bg-surface-tertiary border-default'
-            } disabled:opacity-50`}
+              } disabled:opacity-50`}
           >
             {consequence.label}
           </button>

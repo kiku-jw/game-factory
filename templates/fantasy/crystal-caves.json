@@ -1,0 +1,81 @@
+{
+    "id": "fantasy-crystal-caves",
+    "name": "Crystal Caves",
+    "description": "Explore ancient caverns filled with magical crystals and forgotten secrets.",
+    "genre": "fantasy",
+    "difficulty": "normal",
+    "featured": true,
+    "world": {
+        "setting": "A vast underground network of caves beneath an ancient mountain",
+        "era": "Age of Legends",
+        "atmosphere": "Mysterious, wondrous, slightly dangerous",
+        "tags": [
+            "caves",
+            "magic",
+            "crystals",
+            "exploration"
+        ]
+    },
+    "mechanics": {
+        "resourcePressure": "medium",
+        "threatEscalation": "medium",
+        "puzzleFrequency": "medium",
+        "npcInteraction": "low"
+    },
+    "safety": {
+        "maxViolenceLevel": 1,
+        "forbiddenThemes": [
+            "occult",
+            "gore",
+            "romance"
+        ],
+        "deathStyle": "fade"
+    },
+    "initialScene": {
+        "chapterId": 1,
+        "title": "The Cave Mouth",
+        "narrative": "The entrance to the Crystal Caves looms before you, a natural archway in the mountainside. Faint purple light pulses from within, and you can hear the distant sound of dripping water. Your torch flickers in the cool breeze emanating from the depths. Local legends speak of treasures within, but also of those who never returned.",
+        "choices": [
+            {
+                "id": "c1",
+                "label": "Enter cautiously with torch raised",
+                "risk": null,
+                "cost": null
+            },
+            {
+                "id": "c2",
+                "label": "Search the entrance for clues",
+                "risk": null,
+                "cost": {
+                    "type": "turn",
+                    "amount": 1
+                }
+            },
+            {
+                "id": "c3",
+                "label": "Call out to see if anyone is inside",
+                "risk": 70,
+                "cost": null
+            }
+        ]
+    },
+    "encounters": {
+        "threats": [
+            "cave-in",
+            "crystal-guardian",
+            "pit-trap",
+            "flooding"
+        ],
+        "discoveries": [
+            "glowing-crystal",
+            "ancient-map",
+            "healing-spring",
+            "hidden-cache"
+        ],
+        "puzzles": [
+            "crystal-alignment",
+            "bridge-riddle",
+            "echo-puzzle"
+        ]
+    }
+}

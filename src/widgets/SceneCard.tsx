@@ -12,7 +12,6 @@ interface SceneCardProps {
   threat: 'low' | 'medium' | 'high';
   invCount: number;
   choices: ChoiceDisplay[];
-  sceneSummary: string;
 
   // From _meta
   runRef: string;
@@ -31,7 +30,6 @@ export function SceneCard({
   threat,
   invCount,
   choices,
-  sceneSummary,
   runRef,
   narrative,
   chapterTitle,
@@ -120,11 +118,10 @@ export function SceneCard({
             key={choice.id}
             onClick={() => handleChoice(choice.id)}
             disabled={loading}
-            className={`w-full px-4 py-3 text-left rounded-lg border transition-colors ${
-              loading && selectedChoiceId === choice.id
+            className={`w-full px-4 py-3 text-left rounded-lg border transition-colors ${loading && selectedChoiceId === choice.id
                 ? 'bg-primary text-white border-primary'
                 : 'bg-surface-secondary hover:bg-surface-tertiary border-default'
-            } disabled:opacity-50`}
+              } disabled:opacity-50`}
           >
             <div className="flex items-center justify-between">
               <span>{choice.label}</span>

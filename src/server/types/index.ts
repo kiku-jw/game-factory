@@ -4,7 +4,7 @@
 // ENUMS & CONSTANTS
 // =============================================================================
 
-export type Genre = 'fantasy' | 'sci-fi' | 'mystery' | 'horror-lite';
+export type Genre = 'fantasy' | 'sci-fi' | 'mystery' | 'horror-lite' | 'cyberpunk' | 'surreal';
 export type Tone = 'serious' | 'light';
 export type Length = 'short' | 'medium' | 'long';
 export type Difficulty = 'easy' | 'normal' | 'hard';

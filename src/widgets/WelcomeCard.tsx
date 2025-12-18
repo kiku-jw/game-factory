@@ -2,7 +2,6 @@
 // Initial screen with genre selection
 
 import React, { useState } from 'react';
-import type { WidgetState } from './types.js';
 
 interface WelcomeCardProps {
   onStartRun: (result: unknown) => void;
@@ -14,6 +13,8 @@ const GENRES = [
   { id: 'sci-fi', label: 'Sci-Fi', icon: '🚀' },
   { id: 'mystery', label: 'Mystery', icon: '🔍' },
   { id: 'horror-lite', label: 'Horror', icon: '🌙' },
+  { id: 'cyberpunk', label: 'Cyberpunk', icon: '🌆' },
+  { id: 'surreal', label: 'Surreal', icon: '👁️' },
 ];
 
 const TONES = [
@@ -107,11 +108,10 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
               <button
                 key={t.id}
                 onClick={() => setTone(t.id)}
-                className={`px-3 py-1 rounded text-sm ${
-                  tone === t.id
+                className={`px-3 py-1 rounded text-sm ${tone === t.id
                     ? 'bg-primary text-white'
                     : 'bg-surface-secondary hover:bg-surface-tertiary'
-                }`}
+                  }`}
               >
                 {t.label}
               </button>
@@ -127,11 +127,10 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
               <button
                 key={l.id}
                 onClick={() => setLength(l.id)}
-                className={`px-3 py-1 rounded text-sm ${
-                  length === l.id
+                className={`px-3 py-1 rounded text-sm ${length === l.id
                     ? 'bg-primary text-white'
                     : 'bg-surface-secondary hover:bg-surface-tertiary'
-                }`}
+                  }`}
               >
                 {l.label}
               </button>
@@ -147,11 +146,10 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
               <button
                 key={d.id}
                 onClick={() => setDifficulty(d.id)}
-                className={`px-3 py-1 rounded text-sm ${
-                  difficulty === d.id
+                className={`px-3 py-1 rounded text-sm ${difficulty === d.id
                     ? 'bg-primary text-white'
                     : 'bg-surface-secondary hover:bg-surface-tertiary'
-                }`}
+                  }`}
               >
                 {d.label}
               </button>

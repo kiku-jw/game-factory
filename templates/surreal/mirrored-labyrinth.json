@@ -1,0 +1,81 @@
+{
+    "id": "surreal-the-mirrored-labyrinth",
+    "name": "The Mirrored Labyrinth",
+    "description": "Enter a dreamscape where logic is fluid and your reflection has its own agenda.",
+    "genre": "surreal",
+    "difficulty": "hard",
+    "featured": true,
+    "world": {
+        "setting": "The Between-Space, a realm of shifting mirrors and floating clocks",
+        "era": "Outside of Time",
+        "atmosphere": "Dreamlike, unsettling, nonsensical, beautiful",
+        "tags": [
+            "mirrors",
+            "abstract",
+            "dream",
+            "logic-puzzles"
+        ]
+    },
+    "mechanics": {
+        "resourcePressure": "low",
+        "threatEscalation": "medium",
+        "puzzleFrequency": "high",
+        "npcInteraction": "low"
+    },
+    "safety": {
+        "maxViolenceLevel": 1,
+        "forbiddenThemes": [
+            "occult",
+            "gore",
+            "graphic-violence"
+        ],
+        "deathStyle": "reset"
+    },
+    "initialScene": {
+        "chapterId": 1,
+        "title": "The Glass Hallway",
+        "narrative": "You stand in a hallway that stretches infinitely in both directions. The walls are made of polished obsidian that reflects not you, but a version of you from a different life. A teapot floats by, pouring liquid silver into a cup that isn't there. A door ahead is locked with a riddle whispered by the wind: 'I have cities, but no houses. I have mountains, but no trees.'",
+        "choices": [
+            {
+                "id": "c1",
+                "label": "Whisper the answer: 'A map'",
+                "risk": null,
+                "cost": null
+            },
+            {
+                "id": "c2",
+                "label": "Try to walk through the obsidian wall",
+                "risk": 70,
+                "cost": null
+            },
+            {
+                "id": "c3",
+                "label": "Consult your reflection for advice",
+                "risk": null,
+                "cost": {
+                    "type": "turn",
+                    "amount": 1
+                }
+            }
+        ]
+    },
+    "encounters": {
+        "threats": [
+            "shattering-mirror",
+            "logic-loop",
+            "memory-thief",
+            "gravity-shift"
+        ],
+        "discoveries": [
+            "glass-key",
+            "frozen-moment",
+            "echo-of-self",
+            "color-shard"
+        ],
+        "puzzles": [
+            "perspective-shift",
+            "reverse-time-lock",
+            "shadow-matching"
+        ]
+    }
+}

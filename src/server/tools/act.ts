@@ -3,7 +3,6 @@
 import { z } from 'zod';
 import { GameEngine, ActionResult } from '../engine/GameEngine.js';
 import type {
-  ActInput,
   ActOutput,
   ActSuccessOutput,
   ActPendingOutput,

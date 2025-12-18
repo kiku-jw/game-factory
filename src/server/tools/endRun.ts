@@ -4,8 +4,7 @@ import { z } from 'zod';
 import { RunStore } from '../engine/RunStore.js';
 import { GameEngine } from '../engine/GameEngine.js';
 import { formatShareText } from '../../shared/seedCodec.js';
-import { RATINGS } from '../../shared/constants.js';
-import type { EndRunInput, EndRunOutput, EndRunMeta, RunEndReason } from '../types/index.js';
+import type { EndRunOutput, EndRunMeta } from '../types/index.js';
 
 // =============================================================================
 // INPUT SCHEMA

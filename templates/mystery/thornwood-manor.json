@@ -1,0 +1,78 @@
+{
+    "id": "mystery-thornwood-manor",
+    "name": "Thornwood Manor",
+    "description": "Investigate the disappearance at an old manor with dark secrets.",
+    "genre": "mystery",
+    "difficulty": "normal",
+    "featured": true,
+    "world": {
+        "setting": "A Victorian-era manor house in the English countryside",
+        "era": "1890s",
+        "atmosphere": "Suspenseful, intriguing, gothic",
+        "tags": [
+            "detective",
+            "manor",
+            "secrets",
+            "investigation"
+        ]
+    },
+    "mechanics": {
+        "resourcePressure": "low",
+        "threatEscalation": "low",
+        "puzzleFrequency": "medium",
+        "npcInteraction": "medium"
+    },
+    "safety": {
+        "maxViolenceLevel": 1,
+        "forbiddenThemes": [
+            "occult",
+            "gore",
+            "romance"
+        ],
+        "deathStyle": "reset"
+    },
+    "initialScene": {
+        "chapterId": 1,
+        "title": "The Study",
+        "narrative": "The old manor study is exactly as described in the letter. Dusty bookshelves line the walls, and a large mahogany desk dominates the center. Papers are scattered as if someone left in a hurry. The grandfather clock has stopped at midnight. You are here to find what happened to Lord Thornwood, who vanished three nights ago.",
+        "choices": [
+            {
+                "id": "c1",
+                "label": "Examine the scattered papers",
+                "risk": null,
+                "cost": null
+            },
+            {
+                "id": "c2",
+                "label": "Check behind the bookshelf",
+                "risk": 70,
+                "cost": null
+            },
+            {
+                "id": "c3",
+                "label": "Investigate the stopped clock",
+                "risk": null,
+                "cost": null
+            }
+        ]
+    },
+    "encounters": {
+        "threats": [
+            "suspicious-servant",
+            "locked-room",
+            "false-lead",
+            "time-pressure"
+        ],
+        "discoveries": [
+            "hidden-letter",
+            "secret-passage",
+            "witness-testimony",
+            "key-evidence"
+        ],
+        "puzzles": [
+            "cipher-decode",
+            "timeline-reconstruction",
+            "alibi-verification"
+        ]
+    }
+}

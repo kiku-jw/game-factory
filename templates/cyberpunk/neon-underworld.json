@@ -1,0 +1,78 @@
+{
+    "id": "cyberpunk-neon-underworld",
+    "name": "Neon Underworld",
+    "description": "Navigate the rain-slicked streets of a dystopic mega-city. Hack, bribe, or fight your way to the top.",
+    "genre": "cyberpunk",
+    "difficulty": "normal",
+    "featured": true,
+    "world": {
+        "setting": "Neo-Tokyo, Sector 7",
+        "era": "2099 AD",
+        "atmosphere": "Neon-lit, rainy, high-tech, low-life",
+        "tags": [
+            "hacking",
+            "augmentation",
+            "corporate",
+            "dystopia"
+        ]
+    },
+    "mechanics": {
+        "resourcePressure": "medium",
+        "threatEscalation": "high",
+        "puzzleFrequency": "medium",
+        "npcInteraction": "high"
+    },
+    "safety": {
+        "maxViolenceLevel": 2,
+        "forbiddenThemes": [
+            "occult",
+            "gore",
+            "sexual-content"
+        ],
+        "deathStyle": "fade"
+    },
+    "initialScene": {
+        "chapterId": 1,
+        "title": "The Noodle Bar",
+        "narrative": "Rain blurs the neon signs of Sector 7. You sit at a cramped noodle bar, the steam from your bowl mixing with the smog. Your neural link pings - an encrypted message from an unknown sender. 'We have what you're looking for. Meet at the Chrome Crow in 20 minutes.' Two corporate enforcers just entered the bar, scanning the crowd. They look like they're looking for someone.",
+        "choices": [
+            {
+                "id": "c1",
+                "label": "Jack into the bar's network to distract them",
+                "risk": 60,
+                "cost": null
+            },
+            {
+                "id": "c2",
+                "label": "Slide into the shadows and exit via the back",
+                "risk": null,
+                "cost": null
+            },
+            {
+                "id": "c3",
+                "label": "Keep eating and act like a regular salaryman",
+                "risk": 40,
+                "cost": null
+            }
+        ]
+    },
+    "encounters": {
+        "threats": [
+            "corp-enforcer",
+            "rogue-ai",
+            "hacker-attack",
+            "black-ice"
+        ],
+        "discoveries": [
+            "credits-chip",
+            "data-shard",
+            "stim-pack",
+            "illegal-aug"
+        ],
+        "puzzles": [
+            "terminal-hack",
+            "circuit-reroute",
+            "social-engineering"
+        ]
+    }
+}

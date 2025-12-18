@@ -118,6 +118,7 @@ export function sanitizeUserInput(input: string, maxLength = 200): string {
     .replace(/```.*?```/gs, '')   // ```code blocks```
     .replace(/`.*?`/g, '')        // `inline code`
     // Remove control characters
+    // eslint-disable-next-line no-control-regex
     .replace(/[\x00-\x1F\x7F]/g, '')
     // Limit length
     .slice(0, maxLength)
@@ -162,7 +163,7 @@ export function softenContent(content: string): string {
  * Check if a theme is allowed
  */
 export function isThemeAllowed(theme: string): boolean {
-  return !FORBIDDEN_THEMES.includes(theme as any);
+  return !FORBIDDEN_THEMES.includes(theme as typeof FORBIDDEN_THEMES[number]);
 }
 
 // =============================================================================

@@ -1,0 +1,81 @@
+{
+    "id": "horror-forsaken-cabin",
+    "name": "The Forsaken Cabin",
+    "description": "Shelter from a storm in an abandoned cabin. You are not alone.",
+    "genre": "horror-lite",
+    "difficulty": "hard",
+    "featured": true,
+    "world": {
+        "setting": "A remote cabin in the pine forests of the Pacific Northwest",
+        "era": "Present day",
+        "atmosphere": "Unsettling, tense, mysterious",
+        "tags": [
+            "survival",
+            "isolation",
+            "suspense",
+            "forest"
+        ]
+    },
+    "mechanics": {
+        "resourcePressure": "high",
+        "threatEscalation": "high",
+        "puzzleFrequency": "low",
+        "npcInteraction": "none"
+    },
+    "safety": {
+        "maxViolenceLevel": 2,
+        "forbiddenThemes": [
+            "occult",
+            "gore",
+            "graphic-death"
+        ],
+        "deathStyle": "fade"
+    },
+    "initialScene": {
+        "chapterId": 1,
+        "title": "Shelter",
+        "narrative": "The cabin looked abandoned from outside, but inside shows signs of recent occupation. A fire still smolders in the hearth. Through the grimy window, fog rolls through the trees as the storm intensifies. Your car broke down a mile back, and this was the only shelter. Then you hear it from the basement - a rhythmic sound, like breathing.",
+        "choices": [
+            {
+                "id": "c1",
+                "label": "Investigate the basement carefully",
+                "risk": 60,
+                "cost": null
+            },
+            {
+                "id": "c2",
+                "label": "Search the main floor first",
+                "risk": null,
+                "cost": null
+            },
+            {
+                "id": "c3",
+                "label": "Barricade the basement door",
+                "risk": null,
+                "cost": {
+                    "type": "supplies",
+                    "amount": 1
+                }
+            }
+        ]
+    },
+    "encounters": {
+        "threats": [
+            "strange-noise",
+            "power-outage",
+            "window-shadow",
+            "door-rattling"
+        ],
+        "discoveries": [
+            "flashlight",
+            "journal-entry",
+            "radio",
+            "car-keys"
+        ],
+        "puzzles": [
+            "generator-repair",
+            "locked-safe",
+            "escape-route"
+        ]
+    }
+}

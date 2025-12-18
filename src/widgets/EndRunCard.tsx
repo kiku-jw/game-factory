@@ -14,7 +14,6 @@ interface EndRunCardProps {
   seed: string;
 
   // From _meta
-  runRef: string;
   endingNarrative: string;
   itemsList: string[];
   shareText: string;
@@ -31,7 +30,6 @@ export function EndRunCard({
   progressReached,
   rating,
   seed,
-  runRef,
   endingNarrative,
   itemsList,
   shareText,
