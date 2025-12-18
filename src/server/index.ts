@@ -10,8 +10,12 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
+import { initTemplates } from './engine/TemplateManager.js';
+import { listTemplatesToolDefinition, handleListTemplates } from './tools/listTemplates.js';
 import { startRunToolDefinition, handleStartRun } from './tools/startRun.js';
 import { actToolDefinition, handleAct } from './tools/act.js';
+import { endRunToolDefinition, handleEndRun } from './tools/endRun.js';
+import { exportChallengeToolDefinition, handleExportChallenge } from './tools/exportChallenge.js';
 
 // =============================================================================
 // SERVER SETUP
@@ -30,16 +34,15 @@ const server = new Server(
 );
 
 // =============================================================================
-// TOOL DEFINITIONS
+// TOOL DEFINITIONS (5 Core Tools)
 // =============================================================================
 
 const tools = [
+  listTemplatesToolDefinition,
   startRunToolDefinition,
   actToolDefinition,
-  // TODO: Add more tools in Phase 1
-  // listTemplatesToolDefinition,
-  // endRunToolDefinition,
-  // exportChallengeToolDefinition,
+  endRunToolDefinition,
+  exportChallengeToolDefinition,
 ];
 
 // =============================================================================
@@ -66,15 +69,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   try {
     switch (name) {
+      case 'list_templates': {
+        const result = handleListTemplates(args);
+        return {
+          content: [{ type: 'text', text: JSON.stringify(result.structuredContent) }],
+          _meta: result._meta,
+        };
+      }
+
       case 'start_run': {
         const result = handleStartRun(args);
         return {
-          content: [
-            {
-              type: 'text',
-              text: JSON.stringify(result.structuredContent),
-            },
-          ],
+          content: [{ type: 'text', text: JSON.stringify(result.structuredContent) }],
           _meta: result._meta,
         };
       }
@@ -82,13 +88,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'act': {
         const result = handleAct(args);
         return {
-          content: [
-            {
-              type: 'text',
-              text: JSON.stringify(result.structuredContent),
-            },
-          ],
+          content: [{ type: 'text', text: JSON.stringify(result.structuredContent) }],
           _meta: result._meta,
+        };
+      }
+
+      case 'end_run': {
+        const result = handleEndRun(args);
+        return {
+          content: [{ type: 'text', text: JSON.stringify(result.structuredContent) }],
+          _meta: result._meta,
+        };
+      }
+
+      case 'export_challenge': {
+        const result = handleExportChallenge(args);
+        return {
+          content: [{ type: 'text', text: JSON.stringify(result.structuredContent) }],
         };
       }
 
@@ -100,12 +116,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     console.error(`[Game Factory] Error: ${message}`);
 
     return {
-      content: [
-        {
-          type: 'text',
-          text: JSON.stringify({ error: message }),
-        },
-      ],
+      content: [{ type: 'text', text: JSON.stringify({ error: message }) }],
       isError: true,
     };
   }
@@ -118,10 +129,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   console.error('[Game Factory] Starting MCP server...');
 
+  // Initialize templates
+  initTemplates();
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
-  console.error('[Game Factory] Server running. Waiting for requests...');
+  console.error('[Game Factory] Server running with 5 tools. Waiting for requests...');
 }
 
 main().catch((error) => {
