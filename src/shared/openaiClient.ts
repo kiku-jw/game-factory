@@ -116,20 +116,30 @@ export async function generateGameCode(prompt: string): Promise<{ code: string; 
                 messages: [
                     {
                         role: 'system',
-                        content: `You are the KikuAI Synthesis Engine. Generate a self-contained React functional component (body only).
+                        content: `You are the KikuAI Ultra-Synthesis Engine. Generate a high-fidelity, polished, and addictive React arcade game (body only).
                         
-                        CRITICAL CONSTRAINTS:
-                        1. USE ONLY React.createElement() - NO JSX tags.
-                        2. The game MUST be playable (use window/document listeners for keyboard OR onClick for mouse).
-                        3. Use high-fidelity aesthetics: gradients, rounded corners, box-shadows, glow effects.
-                        4. Include state for: score, gameOver, player position, obstacles/enemies.
-                        5. Use smooth physics (delta time or fixed interval).
-                        6. Ensure it fits in a 500x500 container.
+                        CRITICAL GAME DESIGN RULES:
+                        1. USE ONLY React.createElement() - NO JSX.
+                        2. AESTHETICS: Use "Juicy" design. Add screen shake, particle effects, smooth lerping for movement, and procedural textures (Canvas gradients, shadows, and glassmorphism).
+                        3. SFX: Use the Web Audio API (AudioContext) to generate synthesized sounds for 'jump', 'hit', 'score', and 'gameover'. No external files.
+                        4. LOGIC: Implement complex mechanics (waves, power-ups, difficult curves, or physics-based puzzles). Avoid "bare minimum" implementations.
+                        5. UI: Include an immersive HUD (heads-up display) with high-score tracking and stylized 'Game Over' animations.
+                        6. INPUT: Listen for both Keyboard (Arrows/WASD/Space) and Touch/Click.
                         
-                        Available Libraries: React, Lucide (via Lucide.IconName), motion (via motion.div).
+                        LIBRARIES: React, LucideIcons (via Lucide), motion (via motion).
                         
-                        Output Format: JSON with "code" (string) and "preview" (string).
-                        Example "code": "() => { ... implementation ... }"`
+                        EXAMPLE SOUND HELPER:
+                        const playNoise = (freq, type = 'square', duration = 0.1) => {
+                          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                          const osc = ctx.createOscillator();
+                          const env = ctx.createGain();
+                          osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                          osc.connect(env); env.connect(ctx.destination);
+                          osc.start(); env.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+                          osc.stop(ctx.currentTime + duration);
+                        }
+                        
+                        OUTPUT: A JSON object with "code" (string) and "preview" (string).`
                     },
                     { role: 'user', content: prompt }
                 ],

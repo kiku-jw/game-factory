@@ -110,7 +110,7 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
 
             <div className="flex-[2] flex items-center gap-2 p-1 bg-white/5 border border-white/5 rounded-xl overflow-x-auto no-scrollbar">
               <span className="text-[10px] text-white/20 uppercase font-bold px-2 shrink-0">Try</span>
-              {["Fantasy", "Sci-Fi", "Cyberpunk", "Horror"].map(tag => (
+              {["Synthwave", "Void-Runner", "Lava-Escape", "Glitch-Hacker", "Bio-Mech"].map(tag => (
                 <button
                   key={tag}
                   onClick={() => setPrompt(prev => prev + (prev ? " " : "") + tag)}
