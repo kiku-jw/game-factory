@@ -34,6 +34,9 @@ export async function generateNarrative(prompt: string): Promise<string> {
 
 export async function generateGameCode(prompt: string): Promise<{ code: string; preview: string }> {
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    // DEBUG: check if key is present (not exposing full key)
+    if (apiKey) console.log('[Synthesis] API Key detected, length:', apiKey.length);
+    else console.warn('[Synthesis] API Key MISSING in this build.');
     console.log('[generateGameCode] Prompt:', prompt, 'hasApiKey:', !!apiKey);
     if (!apiKey) {
         console.warn('[OpenAI] No API key, using playable fallback.');
