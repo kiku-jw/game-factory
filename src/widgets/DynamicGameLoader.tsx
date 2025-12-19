@@ -16,16 +16,30 @@ export function DynamicGameLoader({ code, onReset }: DynamicGameLoaderProps) {
     useEffect(() => {
         setLoading(true);
         try {
-            // Enhanced wrapping for multi-statement AI code
-            const body = code.trim().startsWith('(') || code.trim().startsWith('function') || code.trim().startsWith('arg =>') || code.trim().startsWith('() =>')
-                ? `return (${code})`
-                : code;
+            // 1. Clean up code (strip whitespace and potential trailing semicolon for expressions)
+            let cleanCode = code.trim();
 
-            const factory = new Function('React', 'Lucide', 'motion', `
-                const LucideIcons = Lucide;
-                ${body}
-            `);
+            // 2. Identify if it's a pure expression that needs a return
+            const isExpression = cleanCode.startsWith('(') ||
+                cleanCode.startsWith('function') ||
+                cleanCode.startsWith('arg =>') ||
+                cleanCode.startsWith('() =>');
+
+            // 3. Construct the body safely without using template literals for the inner code
+            // This prevents the browser from trying to interpolate ${} inside the AI code
+            let finalBody = "const LucideIcons = Lucide;\n";
+
+            if (isExpression) {
+                // Remove trailing semicolon if it exists before wrapping in return (...)
+                if (cleanCode.endsWith(';')) cleanCode = cleanCode.slice(0, -1);
+                finalBody += "return (" + cleanCode + ");";
+            } else {
+                finalBody += cleanCode;
+            }
+
+            const factory = new Function('React', 'Lucide', 'motion', finalBody);
             const DynamicComp = factory(React, LucideIcons, motion);
+
             if (typeof DynamicComp !== 'function') {
                 throw new Error('Synthesis did not return a valid React component function.');
             }
