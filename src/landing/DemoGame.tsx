@@ -16,6 +16,7 @@ export function DemoGame() {
     const [step, setStep] = useState<WidgetType>('WelcomeCard');
     const [widgetState, setWidgetState] = useState<WidgetState | null>(null);
     const [logs, setLogs] = useState<string[]>([]);
+    const [showBridge, setShowBridge] = useState(false);
 
     const [driver] = useState(() => new DemoDriver((newState: WidgetState) => {
         setWidgetState(newState);
@@ -36,9 +37,9 @@ export function DemoGame() {
     }, [driver]);
 
     return (
-        <div id="demo-section" className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 lg:p-8">
-            <div className="lg:col-span-2 space-y-6">
-                <div className="relative min-h-[500px] glass-morphism rounded-2xl overflow-hidden p-6 border border-primary/20">
+        <div id="demo-section" className="w-full max-w-6xl mx-auto p-4 lg:p-8">
+            <div className="space-y-6">
+                <div className="relative min-h-[600px] glass-morphism rounded-3xl overflow-hidden p-0 border border-primary/20 bg-black/40 shadow-2xl">
                     <div className="absolute top-4 right-4 flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                         <span className="text-[10px] font-mono text-green-500/80 uppercase tracking-widest">Live System</span>
@@ -51,7 +52,7 @@ export function DemoGame() {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 1.02 }}
                             transition={{ duration: 0.2 }}
-                            className="flex justify-center items-center h-full"
+                            className="flex justify-center items-center h-full min-h-[500px]"
                         >
                             {step === 'WelcomeCard' && (
                                 <WelcomeCard onStartRun={() => { }} />
@@ -82,35 +83,41 @@ export function DemoGame() {
                             )}
 
                             {step === 'ArcadeCard' && widgetState?.arcade && (
-                                <ArcadeCard
-                                    {...widgetState.arcade}
-                                    onChoice={(id) => driver.callTool('act', { actionId: id, runRef: widgetState.arcade?.runRef, clientTurn: 1 })}
-                                />
+                                <div className="w-full h-full p-4 lg:p-12">
+                                    <ArcadeCard
+                                        {...widgetState.arcade}
+                                        onChoice={(id) => driver.callTool('act', { actionId: id, runRef: widgetState.arcade?.runRef, clientTurn: 1 })}
+                                    />
+                                </div>
                             )}
                         </motion.div>
                     </AnimatePresence>
                 </div>
             </div>
 
-            <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold uppercase tracking-tighter text-text-secondary">Technical Bridge</h3>
-                </div>
+            {/* Technical Bridge Toggle */}
+            <div className="fixed bottom-4 right-4 z-[60]">
+                <button
+                    onClick={() => setShowBridge(!showBridge)}
+                    className="glass-morphism px-4 py-2 rounded-full border border-primary/30 text-xs font-mono text-primary hover:bg-primary/10 transition-colors uppercase tracking-widest"
+                >
+                    {showBridge ? 'Hide Intel' : 'Show Technical Intel'}
+                </button>
+            </div>
 
-                <div className="h-[500px] bg-black/40 rounded-xl border border-white/5 p-4 font-mono text-[9px] overflow-y-auto space-y-2">
-                    {logs.length === 0 && (
-                        <div className="text-white/20 italic">Waiting for MCP tools...</div>
-                    )}
+            {showBridge && (
+                <div className="fixed bottom-16 right-4 w-80 z-[60] bg-black/90 border border-white/10 rounded-xl p-4 font-mono text-[9px] h-64 overflow-y-auto space-y-1 shadow-2xl backdrop-blur-xl">
+                    <div className="text-text-secondary uppercase mb-2 border-b border-white/5 pb-1">Bridge Feed</div>
                     {logs.map((log, i) => (
                         <div key={i} className={log.includes('CALL') ? 'text-primary' : 'text-green-500 opacity-80'}>
                             {log}
                         </div>
                     ))}
-                    <div className="pt-6 border-t border-white/5 text-white/30 leading-relaxed">
-                        NOTE FOR REVIEWERS: This environment mocks a ChatGPT Store session. All tools are validated server-side (simulated in browser).
+                    <div className="pt-4 text-white/20">
+                        MOCK_SESSION_ACTIVE
                     </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

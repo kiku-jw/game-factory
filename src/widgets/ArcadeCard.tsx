@@ -7,9 +7,10 @@ interface ArcadeCardProps {
     genre: string;
     difficulty: string;
     hp: number;
+    runRef: string;
 }
 
-export function ArcadeCard({ onChoice, genre, difficulty, hp }: ArcadeCardProps) {
+export function ArcadeCard({ onChoice, genre, difficulty, hp, runRef }: ArcadeCardProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
     const [score, setScore] = useState(0);
@@ -37,31 +38,44 @@ export function ArcadeCard({ onChoice, genre, difficulty, hp }: ArcadeCardProps)
             surreal: '#d946ef',
         }[genre] || '#3b82f6';
 
-        // State
-        const player = {
-            x: 50,
-            y: 200,
-            vy: 0,
-            onGround: false
+        // Procedural generation based on genre/runRef
+        const generateObstacles = () => {
+            const obs = [
+                { x: 0, y: 380, w: 2000, h: 20 }, // Long ground
+            ];
+
+            // Use string character codes as a simple seed for positioning
+            const seedStr = runRef + genre;
+            for (let i = 0; i < 15; i++) {
+                const char = seedStr.charCodeAt(i % seedStr.length);
+                const x = 250 + (i * 180) + (char % 50);
+                const y = 300 - (char % 150);
+                obs.push({ x, y, w: 100 + (char % 40), h: 20 });
+            }
+            return obs;
         };
 
-        const obstacles = [
-            { x: 400, y: 300, w: 100, h: 20 },
-            { x: 600, y: 250, w: 100, h: 20 },
-            { x: 800, y: 350, w: 100, h: 20 },
-            { x: 200, y: 350, w: 100, h: 20 },
-        ];
+        const generateCoins = (obs: any[]) => {
+            return obs.slice(1, 11).map(o => ({
+                x: o.x + o.w / 2,
+                y: o.y - 30,
+                collected: false
+            }));
+        };
 
-        const coins = [
-            { x: 450, y: 270, collected: false },
-            { x: 650, y: 220, collected: false },
-            { x: 850, y: 320, collected: false },
-        ];
+        const obstacles = generateObstacles();
+        const coins = generateCoins(obstacles);
+        let cameraX = 0;
 
         let animationFrameId: number;
         const keys: Record<string, boolean> = {};
 
-        const handleKeyDown = (e: KeyboardEvent) => keys[e.code] = true;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+                e.preventDefault();
+            }
+            keys[e.code] = true;
+        };
         const handleKeyUp = (e: KeyboardEvent) => keys[e.code] = false;
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('keyup', handleKeyUp);
@@ -127,25 +141,38 @@ export function ArcadeCard({ onChoice, genre, difficulty, hp }: ArcadeCardProps)
                 setTimeout(() => onChoice('c1'), 1500);
             }
 
+            // Camera follow
+            const targetCamX = player.x - canvas.width / 2;
+            cameraX += (targetCamX - cameraX) * 0.1;
+
             // Draw
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(-cameraX, 0);
 
             // Draw grid (factory feel)
-            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-            for (let i = 0; i < canvas.width; i += 40) {
-                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+            ctx.strokeStyle = themeColors + '20';
+            for (let i = 0; i < cameraX + canvas.width + 40; i += 40) {
+                const drawX = Math.floor(i / 40) * 40;
+                ctx.beginPath(); ctx.moveTo(drawX, 0); ctx.lineTo(drawX, canvas.height); ctx.stroke();
             }
 
-            // Draw Player-bot
+            // Draw Player-bot (with glow)
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = themeColors;
             ctx.fillStyle = themeColors;
             ctx.fillRect(player.x, player.y, playerSize, playerSize);
+            ctx.shadowBlur = 0;
             ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
             ctx.strokeRect(player.x, player.y, playerSize, playerSize);
 
-            // Draw Platform
-            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            // Draw Platforms
+            ctx.fillStyle = 'rgba(255,255,255,0.1)';
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
             obstacles.forEach(obs => {
                 ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
+                ctx.strokeRect(obs.x, obs.y, obs.w, obs.h);
             });
 
             // Draw Coins (Data Bits)
@@ -153,10 +180,14 @@ export function ArcadeCard({ onChoice, genre, difficulty, hp }: ArcadeCardProps)
             coins.forEach(coin => {
                 if (!coin.collected) {
                     ctx.beginPath();
-                    ctx.arc(coin.x, coin.y, 5, 0, Math.PI * 2);
+                    ctx.arc(coin.x, coin.y, 8, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.strokeStyle = 'white';
+                    ctx.stroke();
                 }
             });
+
+            ctx.restore();
 
             animationFrameId = requestAnimationFrame(update);
         };
@@ -171,15 +202,21 @@ export function ArcadeCard({ onChoice, genre, difficulty, hp }: ArcadeCardProps)
     }, [gameState, genre]);
 
     return (
-        <div className="bg-black/40 border border-white/10 rounded-xl overflow-hidden backdrop-blur-xl">
+        <div
+            className="bg-black/40 border border-white/10 rounded-xl overflow-hidden backdrop-blur-xl focus:ring-2 focus:ring-primary outline-none"
+            tabIndex={0}
+            onFocus={() => {
+                if (canvasRef.current) canvasRef.current.focus();
+            }}
+        >
             <div className="p-4 border-b border-white/10 flex justify-between items-center bg-white/5">
                 <div className="flex items-center gap-2">
                     <Gamepad2 className="text-primary w-5 h-5" />
-                    <span className="font-mono text-sm uppercase tracking-wider">Arcade Mode: {genre}</span>
+                    <span className="font-mono text-sm uppercase tracking-wider">Arcade: {genre}</span>
                 </div>
                 <div className="flex items-center gap-4 text-xs font-mono">
                     <div className="text-text-secondary">Difficulty: <span className="text-white">{difficulty}</span></div>
-                    <div className="text-text-secondary">Data Bits: <span className="text-primary">{score}/3</span></div>
+                    <div className="text-text-secondary">Progress: <span className="text-primary">{score}/10</span></div>
                 </div>
             </div>
 
