@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
   const isLibrary = mode === 'library';
 
   return {
+    base: '/game-factory/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
