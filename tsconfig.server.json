@@ -4,6 +4,15 @@
     "outDir": "./dist/server",
     "rootDir": "./src"
   },
-  "include": ["src/server/**/*", "src/shared/**/*"],
-  "exclude": ["node_modules", "dist", "tests", "src/widgets"]
+  "include": [
+    "src/server/**/*",
+    "src/shared/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tests",
+    "src/widgets",
+    "src/shared/openaiClient.ts"
+  ]
 }

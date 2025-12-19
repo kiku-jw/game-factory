@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #e94560;
+  --color-surface: #1a1a2e;
+  --color-surface-secondary: #16213e;
+  --color-surface-tertiary: #0f3460;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a0aec0;
+  
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-surface text-text-primary font-sans antialiased;
+    margin: 0;
+  }
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500;
+}
+
+.glass-morphism {
+  @apply bg-surface/80 backdrop-blur-md border border-white/10;
+}
+
+.glow-btn {
+  @apply relative overflow-hidden transition-all duration-300;
+  box-shadow: 0 0 20px rgba(233, 69, 96, 0.2);
+}
+
+.glow-btn:hover {
+  @apply -translate-y-0.5;
+  box-shadow: 0 0 30px rgba(233, 69, 96, 0.4);
+}

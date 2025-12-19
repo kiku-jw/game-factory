@@ -1,18 +1,4 @@
-// Game Factory - Template Manager
-// Loads and manages curated game templates
-
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type { GameTemplate, Genre } from '../types/index.js';
-
-// =============================================================================
-// PATH HELPERS
-// =============================================================================
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const TEMPLATES_ROOT = path.resolve(__dirname, '../../../templates');
 
 // =============================================================================
 // TEMPLATE STORAGE
@@ -21,66 +7,66 @@ const TEMPLATES_ROOT = path.resolve(__dirname, '../../../templates');
 const templates: Map<string, GameTemplate> = new Map();
 
 // =============================================================================
-// FUNCTIONS
+// BROWSER / SERVER DETECTION
 // =============================================================================
 
-/**
- * Recursively find all .json files in a directory
- */
-function findJsonFiles(dir: string): string[] {
-  const results: string[] = [];
-  const list = fs.readdirSync(dir);
-
-  for (const file of list) {
-    const fullPath = path.join(dir, file);
-    const stat = fs.statSync(fullPath);
-
-    if (stat && stat.isDirectory()) {
-      results.push(...findJsonFiles(fullPath));
-    } else if (file.endsWith('.json')) {
-      results.push(fullPath);
-    }
-  }
-
-  return results;
-}
+const isBrowser = typeof window !== 'undefined';
 
 /**
  * Initialize templates on startup
  */
-export function initTemplates(): void {
+export async function initTemplates(): Promise<void> {
   templates.clear();
 
-  if (!fs.existsSync(TEMPLATES_ROOT)) {
-    console.error(`[TemplateManager] Templates root not found: ${TEMPLATES_ROOT}`);
-    return;
-  }
-
-  const jsonFiles = findJsonFiles(TEMPLATES_ROOT);
-
-  for (const filePath of jsonFiles) {
-    try {
-      const content = fs.readFileSync(filePath, 'utf-8');
-      const template = JSON.parse(content) as GameTemplate;
-
-      if (template.id) {
+  if (isBrowser) {
+    // In Browser: Use Vite's glob import
+    // @ts-ignore
+    const globTemplates = import.meta.glob('../../../templates/**/*.json', { eager: true });
+    for (const path in globTemplates) {
+      const template = (globTemplates[path] as any).default as GameTemplate;
+      if (template && template.id) {
         templates.set(template.id, template);
       }
-    } catch (error) {
-      console.error(`[TemplateManager] Failed to load template from ${filePath}:`, error);
+    }
+  } else {
+    // In Node: Use fs (dynamic import to avoid bundling errors in browser)
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+    const { fileURLToPath } = await import('node:url');
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const TEMPLATES_ROOT = path.resolve(__dirname, '../../../templates');
+
+    if (!fs.existsSync(TEMPLATES_ROOT)) return;
+
+    const findJsonFiles = (dir: string): string[] => {
+      const results: string[] = [];
+      const list = fs.readdirSync(dir);
+      for (const file of list) {
+        const fullPath = path.join(dir, file);
+        if (fs.statSync(fullPath).isDirectory()) {
+          results.push(...findJsonFiles(fullPath));
+        } else if (file.endsWith('.json')) {
+          results.push(fullPath);
+        }
+      }
+      return results;
+    };
+
+    const jsonFiles = findJsonFiles(TEMPLATES_ROOT);
+    for (const filePath of jsonFiles) {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const template = JSON.parse(content) as GameTemplate;
+      if (template.id) templates.set(template.id, template);
     }
   }
-
-  console.error(`[TemplateManager] Loaded ${templates.size} templates from ${TEMPLATES_ROOT}`);
 }
 
 /**
  * Load all templates
  */
 export function loadTemplates(): GameTemplate[] {
-  if (templates.size === 0) {
-    initTemplates();
-  }
   return Array.from(templates.values());
 }
 
@@ -88,9 +74,6 @@ export function loadTemplates(): GameTemplate[] {
  * Get a specific template by ID
  */
 export function getTemplate(id: string): GameTemplate | null {
-  if (templates.size === 0) {
-    initTemplates();
-  }
   return templates.get(id) ?? null;
 }
 
@@ -114,8 +97,7 @@ export function getFeaturedTemplates(): GameTemplate[] {
 export function getRandomTemplate(): GameTemplate {
   const all = loadTemplates();
   if (all.length === 0) {
-    throw new Error('No templates available');
+    throw new Error('No templates available. Did you call initTemplates?');
   }
   return all[Math.floor(Math.random() * all.length)];
 }
-

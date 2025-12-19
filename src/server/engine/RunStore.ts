@@ -1,46 +1,29 @@
-// Game Factory - Run Store (In-Memory State Management)
-
-import { GameState } from '../types/index.js';
+import type { GameState } from '../types/index.js';
 import { STATE_CONFIG } from '../../shared/constants.js';
 
 /**
  * In-memory store for game runs
- * - Keyed by runRef
- * - Auto-cleanup of stale runs
- * - Thread-safe operations
  */
 class RunStoreImpl {
   private runs: Map<string, GameState> = new Map();
-  private cleanupTimer: NodeJS.Timeout | null = null;
+  private cleanupTimer: any = null;
 
   constructor() {
     this.startCleanup();
   }
 
-  /**
-   * Get a run by reference
-   */
   get(runRef: string): GameState | null {
     return this.runs.get(runRef) ?? null;
   }
 
-  /**
-   * Check if a run exists
-   */
   has(runRef: string): boolean {
     return this.runs.has(runRef);
   }
 
-  /**
-   * Create a new run
-   */
   create(state: GameState): void {
     this.runs.set(state.runRef, state);
   }
 
-  /**
-   * Update a run (partial update)
-   */
   update(runRef: string, update: Partial<GameState>): GameState | null {
     const existing = this.runs.get(runRef);
     if (!existing) return null;
@@ -55,23 +38,14 @@ class RunStoreImpl {
     return updated;
   }
 
-  /**
-   * Delete a run
-   */
   delete(runRef: string): boolean {
     return this.runs.delete(runRef);
   }
 
-  /**
-   * Get count of active runs
-   */
   get size(): number {
     return this.runs.size;
   }
 
-  /**
-   * Start periodic cleanup of stale runs
-   */
   private startCleanup(): void {
     if (this.cleanupTimer) return;
 
@@ -79,13 +53,12 @@ class RunStoreImpl {
       this.cleanupStaleRuns();
     }, STATE_CONFIG.cleanupInterval);
 
-    // Don't block process exit
-    this.cleanupTimer.unref();
+    // Node.js specific: don't block process exit
+    if (this.cleanupTimer && typeof this.cleanupTimer === 'object' && 'unref' in this.cleanupTimer) {
+      (this.cleanupTimer as any).unref();
+    }
   }
 
-  /**
-   * Remove runs older than TTL
-   */
   private cleanupStaleRuns(): void {
     const now = Date.now();
     let cleaned = 0;
@@ -102,23 +75,8 @@ class RunStoreImpl {
     }
   }
 
-  /**
-   * Force cleanup (for testing)
-   */
-  forceCleanup(): void {
-    this.cleanupStaleRuns();
-  }
-
-  /**
-   * Clear all runs (for testing)
-   */
-  clear(): void {
-    this.runs.clear();
-  }
-
-  /**
-   * Stop cleanup timer (for shutdown)
-   */
+  forceCleanup(): void { this.cleanupStaleRuns(); }
+  clear(): void { this.runs.clear(); }
   stop(): void {
     if (this.cleanupTimer) {
       clearInterval(this.cleanupTimer);
@@ -127,8 +85,5 @@ class RunStoreImpl {
   }
 }
 
-// Singleton instance
 export const RunStore = new RunStoreImpl();
-
-// Export class for testing
 export { RunStoreImpl };

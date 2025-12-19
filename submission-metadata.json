@@ -1,0 +1,107 @@
+{
+  "app": {
+    "name": "Game Factory",
+    "subtitle": "Endless AI Text Adventures",
+    "category": "games_entertainment",
+    "version": "0.1.0",
+    "logo": "assets/logo.svg"
+  },
+  "description": {
+    "short": "Create unique text-adventure games instantly. No prompts, registration, or payment required. Just pick a genre and play.",
+    "full": "Game Factory is an AI-native endless game generator that creates unique text-adventure experiences in just 2 clicks.\n\n**How It Works:**\n1. Choose your genre (Fantasy, Sci-Fi, Mystery, Horror-Lite, Cyberpunk, Surreal)\n2. Adjust settings or let us surprise you\n3. Play! Make choices, manage resources, face consequences\n\n**Features:**\n- Instant Play: No account needed\n- 6 Curated Genres with unique atmospheres\n- Deep Mechanics: HP, supplies, inventory, threat tracking\n- Fail-Forward Design: Failures offer alternative paths\n- Challenge Sharing: Export seeds to challenge friends\n\n**Content:** Designed for ages 13+. All content filtered for appropriateness."
+  },
+  "mcp": {
+    "endpoint": "${MCP_ENDPOINT_URL}",
+    "transport": "http",
+    "authentication": "none"
+  },
+  "tools": [
+    {
+      "name": "list_templates",
+      "purpose": "Browse available game templates/genres",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "start_run",
+      "purpose": "Initialize a new game session",
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "act",
+      "purpose": "Execute player choices, retry-safe",
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "end_run",
+      "purpose": "End game and get summary with seed",
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "export_challenge",
+      "purpose": "Get shareable challenge seed code",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      }
+    }
+  ],
+  "privacy": {
+    "policy_url": "https://kiku-jw.github.io/game-factory/#privacy",
+    "data_collected": [
+      "game_state",
+      "game_choices",
+      "game_settings"
+    ],
+    "pii_collected": false,
+    "data_retention": "session_only",
+    "third_party_sharing": false
+  },
+  "safety": {
+    "age_rating": "13+",
+    "content_filters": [
+      "violence",
+      "adult",
+      "gambling",
+      "occult"
+    ],
+    "gambling_mechanics": false,
+    "real_money": false
+  },
+  "support": {
+    "email": "support@kikuai.dev",
+    "response_time_hours": 48
+  },
+  "availability": {
+    "regions": [
+      "all"
+    ],
+    "languages": [
+      "en"
+    ]
+  },
+  "testing": {
+    "credentials_required": false,
+    "quick_test_steps": [
+      "Say 'Start a fantasy game'",
+      "Make 3-4 choices",
+      "Say 'End the game'"
+    ]
+  }
+}

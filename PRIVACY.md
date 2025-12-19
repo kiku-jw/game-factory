@@ -1,6 +1,6 @@
 # Game Factory Privacy Policy
 
-**Last Updated:** December 18, 2025
+**Last Updated:** December 19, 2025
 
 ## Overview
 
@@ -78,8 +78,10 @@ We may update this policy to reflect changes in our practices. Significant chang
 ## Contact
 
 For privacy questions or concerns:
-- Email: privacy@gamefactory.example
-- GitHub: https://github.com/example/game-factory
+- Email: privacy@${YOUR_DOMAIN}
+- GitHub: https://github.com/kiku-jw/game-factory
+
+> **Note:** Replace ${YOUR_DOMAIN} with actual domain before publishing.
 
 ## Compliance
 
