@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+
 export async function generateNarrative(prompt: string): Promise<string> {
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
@@ -31,13 +32,13 @@ export async function generateNarrative(prompt: string): Promise<string> {
     }
 }
 
-
 export async function generateGameCode(prompt: string): Promise<{ code: string; preview: string }> {
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+
     // DEBUG: check if key is present (not exposing full key)
     if (apiKey) console.log('[Synthesis] API Key detected, length:', apiKey.length);
     else console.warn('[Synthesis] API Key MISSING in this build.');
-    console.log('[generateGameCode] Prompt:', prompt, 'hasApiKey:', !!apiKey);
+
     if (!apiKey) {
         console.warn('[OpenAI] No API key, using playable fallback.');
         return {
@@ -63,7 +64,6 @@ export async function generateGameCode(prompt: string): Promise<{ code: string; 
                                 return { x: 400, h: 50 + Math.random() * 100 };
                             }
                             if (o.x < 80 && o.x > 20 && (y < o.h || y > o.h + 80)) {
-                                // Simple collision check (ignoring gap for now, just height based)
                                 if (y > 300 - o.h) setGameOver(true);
                             }
                             return { ...o, x: o.x - 4 };
@@ -116,28 +116,23 @@ export async function generateGameCode(prompt: string): Promise<{ code: string; 
                 messages: [
                     {
                         role: 'system',
-                        content: `You are the KikuAI Ultra-Synthesis Engine. Generate a high-fidelity, polished, and addictive React arcade game (body only).
+                        content: `You are the KikuAI Ultra-Synthesis Engine. Generate a high-fidelity, addictive React arcade game (body only).
                         
                         CRITICAL GAME DESIGN RULES:
-                        1. USE ONLY React.createElement() - NO JSX.
-                        2. AESTHETICS: Use "Juicy" design. Add screen shake, particle effects, smooth lerping for movement, and procedural textures (Canvas gradients, shadows, and glassmorphism).
-                        3. SFX: Use the Web Audio API (AudioContext) to generate synthesized sounds for 'jump', 'hit', 'score', and 'gameover'. No external files.
-                        4. LOGIC: Implement complex mechanics (waves, power-ups, difficult curves, or physics-based puzzles). Avoid "bare minimum" implementations.
-                        5. UI: Include an immersive HUD (heads-up display) with high-score tracking and stylized 'Game Over' animations.
-                        6. INPUT: Listen for both Keyboard (Arrows/WASD/Space) and Touch/Click.
+                        1. CODE FORMAT: Return a string that defines the game logic. You MUST end with 'return () => { ... }' or simply return the component function.
+                        2. LIBRARIES: Use ONLY React.createElement() - NO JSX. 
+                           Available globals: React (useState, useEffect, useRef, etc. are already extracted as local variables), LucideIcons, motion.
+                        3. JUICINESS: Add screen shake, particle systems (explosions/sparks), and smooth lerp movement. 
+                           Aesthetics: Neon colors, glassmorphism, procedural noise/gradients on Canvas.
+                        4. SOUND: Use Web Audio API (AudioContext) for retro SFX (jump, score, gameover, hit).
+                        5. GAMEPLAY: Implement meaningful mechanics (difficulty curves, waves, distinct states).
                         
-                        LIBRARIES: React, LucideIcons (via Lucide), motion (via motion).
-                        
-                        EXAMPLE SOUND HELPER:
-                        const playNoise = (freq, type = 'square', duration = 0.1) => {
-                          const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                          const osc = ctx.createOscillator();
-                          const env = ctx.createGain();
-                          osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime);
-                          osc.connect(env); env.connect(ctx.destination);
-                          osc.start(); env.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-                          osc.stop(ctx.currentTime + duration);
-                        }
+                        EXAMPLE STRUCTURE:
+                        const playSfx = (f) => { ... };
+                        return () => {
+                           const [score, setScore] = useState(0);
+                           return React.createElement('div', { style: { ... } }, 'Score: ' + score);
+                        };
                         
                         OUTPUT: A JSON object with "code" (string) and "preview" (string).`
                     },

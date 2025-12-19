@@ -16,9 +16,20 @@ export function DynamicGameLoader({ code, onReset }: DynamicGameLoaderProps) {
     useEffect(() => {
         setLoading(true);
         try {
-            // Safe evaluation of the generated React function code
-            const factory = new Function('React', 'Lucide', 'motion', `return ${code}`);
+            // Enhanced wrapping for multi-statement AI code
+            const body = code.trim().startsWith('(') || code.trim().startsWith('function') || code.trim().startsWith('arg =>') || code.trim().startsWith('() =>')
+                ? `return (${code})`
+                : code;
+
+            const factory = new Function('React', 'Lucide', 'motion', `
+                const { useState, useEffect, useRef, useMemo, useCallback, useLayoutEffect } = React;
+                const LucideIcons = Lucide;
+                ${body}
+            `);
             const DynamicComp = factory(React, LucideIcons, motion);
+            if (typeof DynamicComp !== 'function') {
+                throw new Error('Synthesis did not return a valid React component function.');
+            }
             setComponent(() => DynamicComp);
             setError(null);
         } catch (err: any) {
