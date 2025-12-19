@@ -5,137 +5,101 @@ import {
     SceneCard,
     ConsequenceCard,
     EndRunCard
-} from '@widgets';
-import '../shared/demoDriver'; // Ensure driver is initialized
+} from '../widgets';
+import { DemoDriver } from '../shared/demoDriver';
+import type { WidgetState } from '../widgets/types';
 
 type WidgetType = 'WelcomeCard' | 'SceneCard' | 'ConsequenceCard' | 'EndRunCard';
 
 export function DemoGame() {
-    const [currentWidget, setCurrentWidget] = useState<WidgetType>('WelcomeCard');
-    const [widgetData, setWidgetData] = useState<any>({});
-    const [logs, setLogs] = useState<{ timestamp: string, type: string, message: string }[]>([]);
+    const [step, setStep] = useState<WidgetType>('WelcomeCard');
+    const [widgetState, setWidgetState] = useState<WidgetState | null>(null);
+    const [logs, setLogs] = useState<string[]>([]);
 
-    // Hook into the demo driver to capture logs
+    const [driver] = useState(() => new DemoDriver((newState: WidgetState) => {
+        setWidgetState(newState);
+        if (newState.view) {
+            setStep(newState.view as WidgetType);
+        }
+    }));
+
     useEffect(() => {
-        const originalCallTool = window.openai.callTool;
-        window.openai.callTool = async (name: string, args: Record<string, unknown>) => {
-            addLog('call', `Tool: ${name} (${JSON.stringify(args)})`);
-            const res = await originalCallTool.apply(window.openai, [name, args]);
-            addLog('res', `Result: ${JSON.stringify(res.structuredContent).substring(0, 100)}...`);
+        const originalCall = driver.callTool.bind(driver);
+        driver.callTool = async (name: string, args: Record<string, unknown>) => {
+            setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] CALL: ${name}`]);
+            const res = await originalCall(name, args);
+            setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] SUCCESS: ${name}`]);
             return res;
         };
-    }, []);
-
-    const addLog = (type: string, message: string) => {
-        setLogs(prev => [{
-            timestamp: new Date().toLocaleTimeString(),
-            type,
-            message
-        }, ...prev].slice(0, 10));
-    };
-
-    const handleWidgetTransition = (result: any) => {
-        const template = result._meta?.['openai/outputTemplate'] || 'SceneCard';
-
-        // In our implementation, we map templates to component names
-        setWidgetData({
-            ...result.structuredContent,
-            ...result._meta
-        });
-
-        setCurrentWidget(template as WidgetType);
-    };
-
-    const handleRunEnded = (result: any) => {
-        setWidgetData({
-            ...result.structuredContent,
-            ...result._meta
-        });
-        setCurrentWidget('EndRunCard');
-    };
-
-    const handleReset = () => {
-        setCurrentWidget('WelcomeCard');
-        setWidgetData({});
-        window.openai.setWidgetState({});
-    };
+        (window as any).openai = driver;
+    }, [driver]);
 
     return (
-        <div className="max-w-4xl mx-auto space-y-12">
-            <div className="text-center space-y-4">
-                <h2 className="text-3xl font-bold font-mono uppercase tracking-tighter">Live Game Player</h2>
-                <p className="text-text-secondary">Experience the AI engine in real-time. This player uses the same widgets and logic as the ChatGPT Store app.</p>
-            </div>
+        <div id="demo-section" className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 lg:p-8">
+            <div className="lg:col-span-2 space-y-6">
+                <div className="relative min-h-[500px] glass-morphism rounded-2xl overflow-hidden p-6 border border-primary/20">
+                    <div className="absolute top-4 right-4 flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        <span className="text-[10px] font-mono text-green-500/80 uppercase tracking-widest">Live System</span>
+                    </div>
 
-            <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
-                {/* Widget Container */}
-                <div className="flex-grow flex justify-center w-full min-h-[400px]">
                     <AnimatePresence mode="wait">
                         <motion.div
-                            key={currentWidget}
+                            key={step}
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 1.02 }}
-                            transition={{ duration: 0.3 }}
+                            transition={{ duration: 0.2 }}
+                            className="flex justify-center items-center h-full"
                         >
-                            {currentWidget === 'WelcomeCard' && (
-                                <WelcomeCard
-                                    onStartRun={handleWidgetTransition}
-                                    existingRun={!!window.openai.widgetState.runRef}
-                                />
+                            {step === 'WelcomeCard' && (
+                                <WelcomeCard onStartRun={() => { }} />
                             )}
-                            {currentWidget === 'SceneCard' && (
+
+                            {step === 'SceneCard' && widgetState?.scene && (
                                 <SceneCard
-                                    {...widgetData}
-                                    onChoice={handleWidgetTransition}
-                                    onRunEnded={handleRunEnded}
+                                    {...widgetState.scene}
+                                    onChoice={() => { }}
+                                    onRunEnded={() => { }}
                                 />
                             )}
-                            {currentWidget === 'ConsequenceCard' && (
+
+                            {step === 'ConsequenceCard' && widgetState?.consequence && (
                                 <ConsequenceCard
-                                    {...widgetData}
-                                    onResolve={handleWidgetTransition}
+                                    {...widgetState.consequence}
+                                    onConsequenceResolved={() => { }}
+                                    onRunEnded={() => { }}
                                 />
                             )}
-                            {currentWidget === 'EndRunCard' && (
+
+                            {step === 'EndRunCard' && widgetState?.runSummary && (
                                 <EndRunCard
-                                    {...widgetData}
-                                    onRestart={handleReset}
+                                    {...widgetState.runSummary}
+                                    onNewRun={() => setStep('WelcomeCard')}
+                                    onBrowseTemplates={() => { }}
                                 />
                             )}
                         </motion.div>
                     </AnimatePresence>
                 </div>
+            </div>
 
-                {/* Technical Sidebar / Logs */}
-                <div className="w-full lg:w-80 shrink-0 space-y-4">
-                    <div className="glass-morphism rounded-xl p-6 border-primary/20 bg-primary/5">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-primary">Technical Logs</h3>
-                            <div className="w-2 h-2 rounded-full bg-primary animate-ping" />
-                        </div>
-                        <div className="space-y-3 font-mono text-[10px] leading-tight">
-                            {logs.length === 0 ? (
-                                <div className="text-text-secondary italic">Waiting for tool calls...</div>
-                            ) : (
-                                logs.map((log, i) => (
-                                    <div key={i} className="border-l border-white/10 pl-3 pb-3 space-y-1">
-                                        <div className="flex justify-between items-center opacity-50">
-                                            <span>[{log.timestamp}]</span>
-                                            <span className={log.type === 'call' ? 'text-primary' : 'text-blue-400'}>
-                                                {log.type.toUpperCase()}
-                                            </span>
-                                        </div>
-                                        <div className="break-all">{log.message}</div>
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-bold uppercase tracking-tighter text-text-secondary">Technical Bridge</h3>
+                </div>
 
-                    <div className="p-4 rounded-xl border border-white/5 text-[10px] text-text-secondary leading-normal">
-                        <span className="text-white font-bold block mb-1">PRO-TIP FOR REVIEWERS:</span>
-                        All tools are retry-safe (idempotent). We use a `clientTurn` check to prevent duplicate execution during network lag.
+                <div className="h-[500px] bg-black/40 rounded-xl border border-white/5 p-4 font-mono text-[9px] overflow-y-auto space-y-2">
+                    {logs.length === 0 && (
+                        <div className="text-white/20 italic">Waiting for MCP tools...</div>
+                    )}
+                    {logs.map((log, i) => (
+                        <div key={i} className={log.includes('CALL') ? 'text-primary' : 'text-green-500 opacity-80'}>
+                            {log}
+                        </div>
+                    ))}
+                    <div className="pt-6 border-t border-white/5 text-white/30 leading-relaxed">
+                        NOTE FOR REVIEWERS: This environment mocks a ChatGPT Store session. All tools are validated server-side (simulated in browser).
                     </div>
                 </div>
             </div>

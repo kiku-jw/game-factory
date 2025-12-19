@@ -20,11 +20,46 @@ export interface WidgetState {
   selectedLength?: string;
   selectedDifficulty?: string;
   lastKnownTurn?: number;
+  view?: 'WelcomeCard' | 'SceneCard' | 'ConsequenceCard' | 'EndRunCard';
+
+  // Scene Data
+  scene?: {
+    turn: number;
+    hp: number;
+    supplies: number;
+    threat: 'low' | 'medium' | 'high';
+    invCount: number;
+    choices: ChoiceDisplay[];
+    runRef: string;
+    narrative: string;
+    chapterTitle: string;
+  };
+
+  // Consequence Data
+  consequence?: {
+    turn: number;
+    consequences: ConsequenceDisplay[];
+    runRef: string;
+    failureNarrative: string;
+  };
+
+  // Run Summary Data
+  runSummary?: {
+    turnsSurvived: number;
+    itemsFound: number;
+    threatsDefeated: number;
+    progressReached: number;
+    rating: RatingDisplay;
+    seed: string;
+    endingNarrative: string;
+    itemsList: string[];
+    shareText: string;
+  };
 }
 
 export interface ToolResult {
-  structuredContent: unknown;
-  _meta?: Record<string, unknown>;
+  structuredContent: any;
+  _meta?: Record<string, any>;
 }
 
 // Choice display
