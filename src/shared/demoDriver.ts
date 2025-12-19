@@ -4,7 +4,7 @@ import { handleAct } from '../server/tools/act';
 import { handleEndRun } from '../server/tools/endRun';
 import { handleExportChallenge } from '../server/tools/exportChallenge';
 import { initTemplates } from '../server/engine/TemplateManager';
-import { synthesizeGameSettings } from './openaiClient';
+import { generateGameCode } from './openaiClient';
 import type { OpenAIWidgetAPI, WidgetState, ToolResult } from '../widgets/types';
 
 export class DemoDriver implements OpenAIWidgetAPI {
@@ -23,9 +23,28 @@ export class DemoDriver implements OpenAIWidgetAPI {
         try {
             let result: any;
             if (name === 'start_run' && args.prompt) {
-                const synthesized = await synthesizeGameSettings(args.prompt as string);
-                console.log('[DemoDriver] Synthesized:', synthesized);
-                args = { ...args, ...synthesized };
+                const synthesized = await generateGameCode(args.prompt as string);
+                console.log('[DemoDriver] Generated Code:', synthesized);
+
+                const sc = {
+                    outcome: 'arcade_active',
+                    code: synthesized.code,
+                    preview: synthesized.preview
+                };
+
+                const newState: Partial<WidgetState> = {
+                    view: 'ArcadeCard' as any, // We will repurpose this view or add code-gen view
+                    arcade: {
+                        code: synthesized.code,
+                        genre: synthesized.preview,
+                        difficulty: 'Vibe',
+                        hp: 100,
+                        runRef: 'vibe-' + Date.now()
+                    }
+                };
+
+                await this.setWidgetState(newState);
+                return { structuredContent: sc, _meta: { runRef: 'vibe-' + Date.now() } } as any;
             }
 
             switch (name) {

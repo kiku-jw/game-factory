@@ -7,6 +7,7 @@ import {
     EndRunCard,
     ArcadeCard
 } from '../widgets';
+import { DynamicGameLoader } from '../widgets/DynamicGameLoader';
 import { DemoDriver } from '../shared/demoDriver';
 import type { WidgetState } from '../widgets/types';
 
@@ -55,7 +56,11 @@ export function DemoGame() {
                             className="flex justify-center items-center h-full min-h-[500px]"
                         >
                             {step === 'WelcomeCard' && (
-                                <WelcomeCard onStartRun={() => { }} />
+                                <WelcomeCard onStartRun={(res) => {
+                                    if (res && (res as any).continue) {
+                                        // Handle resume if needed
+                                    }
+                                }} />
                             )}
 
                             {step === 'SceneCard' && widgetState?.scene && (
@@ -84,10 +89,17 @@ export function DemoGame() {
 
                             {step === 'ArcadeCard' && widgetState?.arcade && (
                                 <div className="w-full h-full p-4 lg:p-12">
-                                    <ArcadeCard
-                                        {...widgetState.arcade}
-                                        onChoice={(id) => driver.callTool('act', { actionId: id, runRef: widgetState.arcade?.runRef, clientTurn: 1 })}
-                                    />
+                                    {widgetState.arcade.code ? (
+                                        <DynamicGameLoader
+                                            code={widgetState.arcade.code}
+                                            onReset={() => setStep('WelcomeCard')}
+                                        />
+                                    ) : (
+                                        <ArcadeCard
+                                            {...widgetState.arcade}
+                                            onChoice={(id) => driver.callTool('act', { actionId: id, runRef: widgetState.arcade?.runRef, clientTurn: 1 })}
+                                        />
+                                    )}
                                 </div>
                             )}
                         </motion.div>

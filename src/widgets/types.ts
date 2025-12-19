@@ -37,6 +37,7 @@ export interface WidgetState {
 
   // Arcade Data
   arcade?: {
+    code?: string;
     genre: string;
     difficulty: string;
     hp: number;

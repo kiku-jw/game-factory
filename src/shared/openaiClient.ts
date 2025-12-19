@@ -31,11 +31,22 @@ export async function generateNarrative(prompt: string): Promise<string> {
     }
 }
 
-export async function synthesizeGameSettings(prompt: string): Promise<any> {
+
+export async function generateGameCode(prompt: string): Promise<{ code: string; preview: string }> {
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
-        console.warn('[OpenAI] No API key, using fallback synthesis.');
-        return { genre: 'fantasy', format: 'quest', difficulty: 'normal' };
+        console.warn('[OpenAI] No API key, using fallback code.');
+        return {
+            code: `() => {
+                const [pos, setPos] = React.useState(50);
+                React.useEffect(() => {
+                    const id = setInterval(() => setPos(p => (p + 2) % 400), 20);
+                    return () => clearInterval(id);
+                }, []);
+                return <div style={{width: 50, height: 50, background: 'red', transform: \`translateX(\${pos}px)\` }} />;
+            }`,
+            preview: "Fallback Game Engine"
+        };
     }
 
     try {
@@ -50,19 +61,23 @@ export async function synthesizeGameSettings(prompt: string): Promise<any> {
                 messages: [
                     {
                         role: 'system',
-                        content: `You are an AI Arcade Game Factory. Your job is to translate user prompts into structured 2D arcade platformer configurations.
-                        Strict Rules:
-                        1. Always set "format" to "arcade".
-                        2. Choose a genre that best fits the prompt.
-                        3. Difficulty should scale based on the prompt complexity.
+                        content: `You are a Vibe-Coding Game Engine. Generate a self-contained React functional component for an arcade game based on the user's prompt.
                         
-                        Return ONLY JSON in this format:
-                        {
-                          "genre": "fantasy" | "sci-fi" | "mystery" | "horror-lite" | "cyberpunk" | "surreal",
-                          "format": "arcade",
-                          "difficulty": "easy" | "normal" | "hard",
-                          "tone": "serious" | "light",
-                          "suggestedNarrative": "A short 1-sentence arcade mission description"
+                        RULES:
+                        1. Use ONLY React and standard HTML5 Canvas/DOM. No external libraries besides 'lucide-react'.
+                        2. Use 'React.useState', 'React.useEffect', etc. (React is available globally).
+                        3. The game must be playable with keyboard (Arrows/Space).
+                        4. Include a 'Game Over' and 'Score' state.
+                        5. The component should be visually polished with CSS-in-JS or inline styles.
+                        6. Return ONLY a JSON object with two fields: 
+                           "code": A string containing the body of the function (excluding 'export default'). It should be a function expression that returns JSX.
+                           "preview": A short 3-word title of the game.
+                        
+                        Example "code" format:
+                        () => {
+                          const [score, setScore] = React.useState(0);
+                          // ... game logic ...
+                          return <div style={{ background: 'black', color: 'white' }}>Score: {score}</div>
                         }`
                     },
                     { role: 'user', content: prompt }
@@ -72,10 +87,10 @@ export async function synthesizeGameSettings(prompt: string): Promise<any> {
         });
 
         const data = await response.json();
-        const content = data.choices[0].message.content;
-        return JSON.parse(content);
+        const content = JSON.parse(data.choices[0].message.content);
+        return content;
     } catch (error) {
-        console.error('[OpenAI] Error synthesizing settings:', error);
-        return { genre: 'fantasy', format: 'quest', difficulty: 'normal' };
+        console.error('[OpenAI] Error generating game code:', error);
+        return { code: '() => <div>Error generating game</div>', preview: 'Error' };
     }
 }
