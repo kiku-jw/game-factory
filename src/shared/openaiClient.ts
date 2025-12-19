@@ -50,14 +50,19 @@ export async function synthesizeGameSettings(prompt: string): Promise<any> {
                 messages: [
                     {
                         role: 'system',
-                        content: `You are a Game Factory Architect. Translate the user prompt into structured game configuration.
+                        content: `You are an AI Arcade Game Factory. Your job is to translate user prompts into structured 2D arcade platformer configurations.
+                        Strict Rules:
+                        1. Always set "format" to "arcade".
+                        2. Choose a genre that best fits the prompt.
+                        3. Difficulty should scale based on the prompt complexity.
+                        
                         Return ONLY JSON in this format:
                         {
                           "genre": "fantasy" | "sci-fi" | "mystery" | "horror-lite" | "cyberpunk" | "surreal",
-                          "format": "quest" | "arcade" | "puzzle",
+                          "format": "arcade",
                           "difficulty": "easy" | "normal" | "hard",
                           "tone": "serious" | "light",
-                          "suggestedNarrative": "A short 1-sentence hook"
+                          "suggestedNarrative": "A short 1-sentence arcade mission description"
                         }`
                     },
                     { role: 'user', content: prompt }

@@ -40,20 +40,16 @@ export class DemoDriver implements OpenAIWidgetAPI {
             // Automap outcomes to views for the demo
             if (result.structuredContent) {
                 const sc = result.structuredContent;
-                const view = this.mapOutcomeToView(sc.outcome, name, result._meta);
+                const view = this.mapOutcomeToView();
 
                 const newState: Partial<WidgetState> = {
-                    view: view as any,
-                };
-
-                if (view === 'SceneCard') newState.scene = { ...sc, ...result._meta };
-                if (view === 'ConsequenceCard') newState.consequence = { ...sc, ...result._meta };
-                if (view === 'EndRunCard') newState.runSummary = { ...sc, ...result._meta };
-                if (view === 'ArcadeCard') newState.arcade = {
-                    genre: result._meta.worldName || 'Fantasy',
-                    difficulty: 'Normal',
-                    hp: sc.hp,
-                    runRef: result._meta.runRef
+                    view: 'ArcadeCard',
+                    arcade: {
+                        genre: result._meta.worldName || 'Fantasy',
+                        difficulty: 'Normal',
+                        hp: sc.hp || 10,
+                        runRef: result._meta.runRef
+                    }
                 };
 
                 await this.setWidgetState(newState);
@@ -66,12 +62,8 @@ export class DemoDriver implements OpenAIWidgetAPI {
         }
     }
 
-    private mapOutcomeToView(outcome: string, tool: string, meta?: any): string {
-        if (meta?.['openai/outputTemplate']) return meta['openai/outputTemplate'];
-        if (tool === 'start_run') return 'SceneCard';
-        if (outcome === 'pending_consequence') return 'ConsequenceCard';
-        if (outcome === 'run_ended') return 'EndRunCard';
-        return 'SceneCard';
+    private mapOutcomeToView(): string {
+        return 'ArcadeCard';
     }
 
     async setWidgetState(state: Partial<WidgetState>): Promise<void> {

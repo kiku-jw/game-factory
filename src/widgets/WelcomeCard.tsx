@@ -11,11 +11,11 @@ interface WelcomeCardProps {
 }
 
 const SUGGESTIONS = [
-  "Space horror where I am a cat on a derelict freighter",
-  "Cyberpunk detective mystery in a rainy neon city",
-  "High fantasy adventure defending a mountain pass",
-  "Surreal dreamscape puzzle where time flows backwards",
-  "Retro arcade platformer in a digital wasteland",
+  "A cyberpunk platformer where I am a hackers drone",
+  "Ocean exploration arcade with a tiny sub",
+  "Escape from a haunted digital factory",
+  "High-speed chase on a neon highway",
+  "Retro pixel-art knight in a lava castle",
 ];
 
 export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
@@ -57,8 +57,8 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
             <Sparkles size={12} />
             AI Synthesis Engine v0.3.0
           </motion.div>
-          <h2 className="text-3xl font-bold text-white tracking-tight mb-2">What will you play today?</h2>
-          <p className="text-text-secondary text-sm">Describe your adventure. Our factory will build it in seconds.</p>
+          <h2 className="text-3xl font-bold text-white tracking-tight mb-2">Build your Arcade Game</h2>
+          <p className="text-text-secondary text-sm">Describe your mission. We'll synthesize the level in seconds.</p>
         </header>
 
         <div className="space-y-6">
@@ -66,7 +66,7 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="e.g. A noir mystery set on a moon base..."
+              placeholder="e.g. A fast-paced shooter in space..."
               className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all resize-none group-hover:border-white/20"
               disabled={loading}
             />

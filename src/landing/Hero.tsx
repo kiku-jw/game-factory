@@ -27,14 +27,14 @@ export function Hero({ onStartGame }: HeroProps) {
                     </div>
 
                     <h1 className="text-5xl md:text-7xl font-bold leading-tight tracking-tighter">
-                        Build Endless <br />
-                        <span className="gradient-text">AI Adventures</span> <br />
-                        In Two Clicks.
+                        Build Instant <br />
+                        <span className="gradient-text">Arcade Games</span> <br />
+                        With One Prompt.
                     </h1>
 
                     <p className="text-lg text-text-secondary max-w-lg leading-relaxed">
-                        Game Factory is an AI-native engine that generates unique text-adventure experiences.
-                        No prompts, no registration, no limits. Just pick a genre and play.
+                        Game Factory is an AI-native engine that synthesizes unique 2D arcade experiences.
+                        Describe your mission, and our factory builds the world, physics, and challenges instantly.
                     </p>
 
                     <div className="flex flex-wrap gap-4 pt-4">
@@ -132,8 +132,8 @@ export function Hero({ onStartGame }: HeroProps) {
                 />
                 <FeatureCard
                     icon={<Zap className="text-primary" />}
-                    title="Adaptive Narrative"
-                    description="Every choice ripples through the story, affecting your health, supplies, and threat level."
+                    title="Adaptive Physics"
+                    description="Every prompt changes the gravity, speed, and level design of your arcade mission."
                 />
                 <FeatureCard
                     icon={<ShieldCheck className="text-primary" />}
