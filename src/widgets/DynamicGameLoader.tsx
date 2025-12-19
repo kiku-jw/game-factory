@@ -22,7 +22,6 @@ export function DynamicGameLoader({ code, onReset }: DynamicGameLoaderProps) {
                 : code;
 
             const factory = new Function('React', 'Lucide', 'motion', `
-                const { useState, useEffect, useRef, useMemo, useCallback, useLayoutEffect } = React;
                 const LucideIcons = Lucide;
                 ${body}
             `);

@@ -25,7 +25,8 @@ const CODING_SYSTEM_PROMPT = `You are the KikuAI Ultra-Synthesis Engine. Generat
 STRICT TECHNICAL RULES:
 1. CODE FORMAT: Return a valid JavaScript string. You MUST use 'return () => { ... }' at the end.
 2. LIBRARIES: Use ONLY React.createElement() - NO JSX. 
-   Available globals: React (useState, useEffect, useRef, useMemo, etc. are extracted as local variables), LucideIcons, motion.
+   Available globals: React, LucideIcons, motion.
+   IMPORTANT: Destructure hooks (useState, useEffect, etc.) from React if you need them.
 3. JUICINESS: 
    - Screen Shake: Implement a shakeIntensity state.
    - Particles: Use a canvas-based particle system for explosions or trails.
