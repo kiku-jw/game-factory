@@ -34,6 +34,7 @@ export class GameEngine {
       tone: input.tone || DEFAULTS.tone,
       length: input.length || DEFAULTS.length,
       difficulty: input.difficulty || DEFAULTS.difficulty,
+      format: input.format || 'quest',
       templateId: input.templateId,
     };
 

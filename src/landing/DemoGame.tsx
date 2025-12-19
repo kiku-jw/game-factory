@@ -4,12 +4,13 @@ import {
     WelcomeCard,
     SceneCard,
     ConsequenceCard,
-    EndRunCard
+    EndRunCard,
+    ArcadeCard
 } from '../widgets';
 import { DemoDriver } from '../shared/demoDriver';
 import type { WidgetState } from '../widgets/types';
 
-type WidgetType = 'WelcomeCard' | 'SceneCard' | 'ConsequenceCard' | 'EndRunCard';
+type WidgetType = 'WelcomeCard' | 'SceneCard' | 'ConsequenceCard' | 'EndRunCard' | 'ArcadeCard';
 
 export function DemoGame() {
     const [step, setStep] = useState<WidgetType>('WelcomeCard');
@@ -77,6 +78,13 @@ export function DemoGame() {
                                     {...widgetState.runSummary}
                                     onNewRun={() => setStep('WelcomeCard')}
                                     onBrowseTemplates={() => { }}
+                                />
+                            )}
+
+                            {step === 'ArcadeCard' && widgetState?.arcade && (
+                                <ArcadeCard
+                                    {...widgetState.arcade}
+                                    onChoice={(id) => driver.callTool('act', { actionId: id, runRef: widgetState.arcade?.runRef, clientTurn: 1 })}
                                 />
                             )}
                         </motion.div>

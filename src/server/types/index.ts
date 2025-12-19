@@ -11,6 +11,7 @@ export type Difficulty = 'easy' | 'normal' | 'hard';
 export type ThreatLevel = 'low' | 'medium' | 'high';
 export type RunEndReason = 'victory' | 'defeat' | 'escape' | 'abandon';
 export type ConsequenceType = 'hp' | 'supplies' | 'turn' | 'threat' | 'item';
+export type GameFormat = 'quest' | 'arcade' | 'puzzle';
 
 // =============================================================================
 // GAME STATE
@@ -21,6 +22,7 @@ export interface GameSettings {
   tone: Tone;
   length: Length;
   difficulty: Difficulty;
+  format: GameFormat;
   templateId?: string;
 }
 
@@ -117,6 +119,7 @@ export interface StartRunInput {
   tone?: Tone;
   length?: Length;
   difficulty?: Difficulty;
+  format?: GameFormat;
 }
 
 export interface ActInput {
@@ -229,7 +232,7 @@ export interface ExportChallengeOutput {
 // =============================================================================
 
 export interface StartRunMeta {
-  'openai/outputTemplate': 'SceneCard';
+  'openai/outputTemplate': 'SceneCard' | 'ArcadeCard' | 'PuzzleCard';
   runRef: string;
   seed: string;
   narrative: string;

@@ -20,7 +20,7 @@ export interface WidgetState {
   selectedLength?: string;
   selectedDifficulty?: string;
   lastKnownTurn?: number;
-  view?: 'WelcomeCard' | 'SceneCard' | 'ConsequenceCard' | 'EndRunCard';
+  view?: 'WelcomeCard' | 'SceneCard' | 'ConsequenceCard' | 'EndRunCard' | 'ArcadeCard' | 'PuzzleCard';
 
   // Scene Data
   scene?: {
@@ -33,6 +33,14 @@ export interface WidgetState {
     runRef: string;
     narrative: string;
     chapterTitle: string;
+  };
+
+  // Arcade Data
+  arcade?: {
+    genre: string;
+    difficulty: string;
+    hp: number;
+    runRef: string;
   };
 
   // Consequence Data

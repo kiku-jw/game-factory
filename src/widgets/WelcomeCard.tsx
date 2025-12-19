@@ -39,6 +39,7 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
   const [tone, setTone] = useState('light');
   const [length, setLength] = useState('medium');
   const [difficulty, setDifficulty] = useState('normal');
+  const [format, setFormat] = useState('quest');
   const [loading, setLoading] = useState(false);
 
   const handleGenreSelect = (genreId: string) => {
@@ -71,6 +72,7 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
         tone,
         length,
         difficulty,
+        format,
       });
       await window.openai.setWidgetState({
         runRef: (result._meta as any)?.runRef,
@@ -109,8 +111,8 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
                 key={t.id}
                 onClick={() => setTone(t.id)}
                 className={`px-3 py-1 rounded text-sm ${tone === t.id
-                    ? 'bg-primary text-white'
-                    : 'bg-surface-secondary hover:bg-surface-tertiary'
+                  ? 'bg-primary text-white'
+                  : 'bg-surface-secondary hover:bg-surface-tertiary'
                   }`}
               >
                 {t.label}
@@ -128,8 +130,8 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
                 key={l.id}
                 onClick={() => setLength(l.id)}
                 className={`px-3 py-1 rounded text-sm ${length === l.id
-                    ? 'bg-primary text-white'
-                    : 'bg-surface-secondary hover:bg-surface-tertiary'
+                  ? 'bg-primary text-white'
+                  : 'bg-surface-secondary hover:bg-surface-tertiary'
                   }`}
               >
                 {l.label}
@@ -138,7 +140,29 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
           </div>
         </div>
 
-        {/* Difficulty */}
+        {/* Format */}
+        <div className="mb-3">
+          <label className="text-sm text-secondary mb-1 block">Game Format</label>
+          <div className="flex gap-2">
+            {[
+              { id: 'quest', label: 'Quest', icon: '📖' },
+              { id: 'arcade', label: 'Arcade', icon: '🕹️' },
+              { id: 'puzzle', label: 'Logic', icon: '🧩' },
+            ].map(f => (
+              <button
+                key={f.id}
+                onClick={() => setFormat(f.id)}
+                className={`flex-1 px-3 py-2 rounded text-sm flex flex-col items-center gap-1 ${format === f.id
+                  ? 'bg-primary text-white border-primary'
+                  : 'bg-surface-secondary border border-transparent hover:bg-surface-tertiary'
+                  }`}
+              >
+                <span className="text-lg">{f.icon}</span>
+                <span className="text-[10px] uppercase font-bold">{f.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="mb-4">
           <label className="text-sm text-secondary mb-1 block">Difficulty</label>
           <div className="flex gap-2">
@@ -147,8 +171,8 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
                 key={d.id}
                 onClick={() => setDifficulty(d.id)}
                 className={`px-3 py-1 rounded text-sm ${difficulty === d.id
-                    ? 'bg-primary text-white'
-                    : 'bg-surface-secondary hover:bg-surface-tertiary'
+                  ? 'bg-primary text-white'
+                  : 'bg-surface-secondary hover:bg-surface-tertiary'
                   }`}
               >
                 {d.label}
@@ -173,7 +197,7 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
             {loading ? 'Starting...' : '▶ Start Adventure'}
           </button>
         </div>
-      </div>
+      </div >
     );
   }
 

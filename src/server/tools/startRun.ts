@@ -7,6 +7,7 @@ import type {
   StartRunOutput,
   StartRunMeta,
   ChoiceOutput,
+  GameFormat,
 } from '../types/index.js';
 
 // =============================================================================
@@ -20,6 +21,7 @@ export const StartRunInputSchema = z.object({
   tone: z.enum(['serious', 'light']).optional(),
   length: z.enum(['short', 'medium', 'long']).optional(),
   difficulty: z.enum(['easy', 'normal', 'hard']).optional(),
+  format: z.enum(['quest', 'arcade', 'puzzle']).optional(),
 });
 
 // =============================================================================
@@ -59,6 +61,11 @@ export const startRunToolDefinition = {
         type: 'string',
         enum: ['easy', 'normal', 'hard'],
         description: 'Game difficulty',
+      },
+      format: {
+        type: 'string',
+        enum: ['quest', 'arcade', 'puzzle'],
+        description: 'Game visual/play format (default: quest)',
       },
     },
   },
@@ -103,8 +110,14 @@ export function handleStartRun(input: unknown): {
   };
 
   // Build _meta (rich, for widget only)
+  const templateMap: Record<GameFormat, string> = {
+    quest: 'SceneCard',
+    arcade: 'ArcadeCard',
+    puzzle: 'PuzzleCard',
+  };
+
   const _meta: StartRunMeta = {
-    'openai/outputTemplate': 'SceneCard',
+    'openai/outputTemplate': (templateMap[state.settings.format] || 'SceneCard') as any,
     runRef: state.runRef,
     seed: state.seed,
     narrative: state.currentScene.narrative,
