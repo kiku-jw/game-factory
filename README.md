@@ -5,7 +5,7 @@
 Built by [KikuAI](https://kikuai.dev). Create unique text-adventure games in 2 clicks and play endlessly. No prompts, registration, or payment required for basic play.
 
 [![CI](https://github.com/KikuAI/game-factory/actions/workflows/ci.yml/badge.svg)](https://github.com/KikuAI/game-factory/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](https://opensource.org/licenses/MIT)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-MIT-black.svg)](https://opensource.org/licenses/MIT)
 
 ## 🌟 Features
 
