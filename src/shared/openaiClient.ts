@@ -38,14 +38,23 @@ export async function generateGameCode(prompt: string): Promise<{ code: string; 
         console.warn('[OpenAI] No API key, using fallback code.');
         return {
             code: `() => {
-                const [pos, setPos] = React.useState(50);
+                const [pos, setPos] = React.useState(0);
                 React.useEffect(() => {
-                    const id = setInterval(() => setPos(p => (p + 2) % 400), 20);
+                    const id = setInterval(() => setPos(p => (p + 2) % 100), 20);
                     return () => clearInterval(id);
                 }, []);
-                return <div style={{width: 50, height: 50, background: 'red', transform: \`translateX(\${pos}px)\` }} />;
+                return React.createElement('div', { 
+                    style: { 
+                        width: 50, 
+                        height: 50, 
+                        background: 'radial-gradient(circle, #ff0055, #8800ff)', 
+                        borderRadius: '12px',
+                        boxShadow: '0 0 20px rgba(255,0,85,0.5)',
+                        transform: \`translateX(\${pos}px) rotate(\${pos}deg)\` 
+                    } 
+                });
             }`,
-            preview: "Fallback Game Engine"
+            preview: "Fallback Engine"
         };
     }
 
@@ -61,24 +70,24 @@ export async function generateGameCode(prompt: string): Promise<{ code: string; 
                 messages: [
                     {
                         role: 'system',
-                        content: `You are a Vibe-Coding Game Engine. Generate a self-contained React functional component for an arcade game based on the user's prompt.
+                        content: `You are a Vibe-Coding Game Engine. Generate a self-contained React functional component body.
                         
-                        RULES:
-                        1. Use ONLY React and standard HTML5 Canvas/DOM. No external libraries besides 'lucide-react'.
-                        2. Use 'React.useState', 'React.useEffect', etc. (React is available globally).
-                        3. The game must be playable with keyboard (Arrows/Space).
-                        4. Include a 'Game Over' and 'Score' state.
-                        5. The component should be visually polished with CSS-in-JS or inline styles.
-                        6. Return ONLY a JSON object with two fields: 
-                           "code": A string containing the body of the function (excluding 'export default'). It should be a function expression that returns JSX.
-                           "preview": A short 3-word title of the game.
+                        CRITICAL RULES:
+                        1. Use ONLY React.createElement() - NO JSX (no <tags>). 
+                           Example: React.createElement('div', { style: { color: 'white' } }, 'Hello')
+                        2. Use standard HTML5 Canvas or DOM elements for the game.
+                        3. Use 'React.useState', 'React.useEffect', etc. (React and Lucide are available).
+                        4. Include a full game loop, keyboard controls (Arrows/Space), Score, and Game Over.
+                        5. Use high-fidelity styles (gradients, shadows, animations).
+                        6. Return ONLY a JSON object:
+                           "code": A string containing a function expression that returns React elements.
+                           "preview": A short title.
                         
-                        Example "code" format:
-                        () => {
+                        Example "code":
+                        "() => {
                           const [score, setScore] = React.useState(0);
-                          // ... game logic ...
-                          return <div style={{ background: 'black', color: 'white' }}>Score: {score}</div>
-                        }`
+                          return React.createElement('div', { style: { background: 'black' } }, \`Score: \${score}\`);
+                        }"`
                     },
                     { role: 'user', content: prompt }
                 ],
