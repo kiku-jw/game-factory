@@ -8,7 +8,10 @@ import { Shield, FileText, Gamepad2, Github } from 'lucide-react';
 type Page = 'home' | 'demo' | 'privacy' | 'terms';
 
 export default function App() {
-    const [page, setPage] = useState<Page>('home');
+    const [page, setPage] = useState<Page>(() => {
+        const hash = window.location.hash.replace('#', '');
+        return (['home', 'demo', 'privacy', 'terms'].includes(hash) ? hash : 'home') as Page;
+    });
 
     // Handle back button for SPA feel
     useEffect(() => {
