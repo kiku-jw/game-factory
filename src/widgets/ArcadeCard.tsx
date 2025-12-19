@@ -67,6 +67,14 @@ export function ArcadeCard({ onChoice, genre, difficulty, hp, runRef }: ArcadeCa
         const coins = generateCoins(obstacles);
         let cameraX = 0;
 
+        // Player state
+        const player = {
+            x: 50,
+            y: 200,
+            vy: 0,
+            onGround: false
+        };
+
         let animationFrameId: number;
         const keys: Record<string, boolean> = {};
 
