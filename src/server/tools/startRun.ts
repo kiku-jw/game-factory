@@ -22,6 +22,7 @@ export const StartRunInputSchema = z.object({
   length: z.enum(['short', 'medium', 'long']).optional(),
   difficulty: z.enum(['easy', 'normal', 'hard']).optional(),
   format: z.enum(['quest', 'arcade', 'puzzle']).optional(),
+  prompt: z.string().optional(),
 });
 
 // =============================================================================
@@ -66,6 +67,10 @@ export const startRunToolDefinition = {
         type: 'string',
         enum: ['quest', 'arcade', 'puzzle'],
         description: 'Game visual/play format (default: quest)',
+      },
+      prompt: {
+        type: 'string',
+        description: 'Natural language description of the game to generate',
       },
     },
   },

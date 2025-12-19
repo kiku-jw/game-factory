@@ -120,6 +120,7 @@ export interface StartRunInput {
   length?: Length;
   difficulty?: Difficulty;
   format?: GameFormat;
+  prompt?: string;
 }
 
 export interface ActInput {

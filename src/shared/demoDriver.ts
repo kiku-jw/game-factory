@@ -4,6 +4,7 @@ import { handleAct } from '../server/tools/act';
 import { handleEndRun } from '../server/tools/endRun';
 import { handleExportChallenge } from '../server/tools/exportChallenge';
 import { initTemplates } from '../server/engine/TemplateManager';
+import { synthesizeGameSettings } from './openaiClient';
 import type { OpenAIWidgetAPI, WidgetState, ToolResult } from '../widgets/types';
 
 export class DemoDriver implements OpenAIWidgetAPI {
@@ -21,6 +22,12 @@ export class DemoDriver implements OpenAIWidgetAPI {
 
         try {
             let result: any;
+            if (name === 'start_run' && args.prompt) {
+                const synthesized = await synthesizeGameSettings(args.prompt as string);
+                console.log('[DemoDriver] Synthesized:', synthesized);
+                args = { ...args, ...synthesized };
+            }
+
             switch (name) {
                 case 'list_templates': result = handleListTemplates(args); break;
                 case 'start_run': result = handleStartRun(args); break;
