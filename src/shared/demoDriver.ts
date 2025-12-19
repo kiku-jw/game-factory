@@ -23,8 +23,9 @@ export class DemoDriver implements OpenAIWidgetAPI {
         try {
             let result: any;
             if (name === 'start_run' && args.prompt) {
+                console.log('[DemoDriver] Code-gen path triggered for prompt:', args.prompt);
                 const synthesized = await generateGameCode(args.prompt as string);
-                console.log('[DemoDriver] Generated Code:', synthesized);
+                console.log('[DemoDriver] Synthesis result:', synthesized.preview);
 
                 const sc = {
                     outcome: 'arcade_active',
@@ -33,7 +34,7 @@ export class DemoDriver implements OpenAIWidgetAPI {
                 };
 
                 const newState: Partial<WidgetState> = {
-                    view: 'ArcadeCard' as any, // We will repurpose this view or add code-gen view
+                    view: 'ArcadeCard' as any,
                     arcade: {
                         code: synthesized.code,
                         genre: synthesized.preview,
@@ -43,6 +44,7 @@ export class DemoDriver implements OpenAIWidgetAPI {
                     }
                 };
 
+                console.log('[DemoDriver] Setting state with code length:', synthesized.code.length);
                 await this.setWidgetState(newState);
                 return { structuredContent: sc, _meta: { runRef: 'vibe-' + Date.now() } } as any;
             }
