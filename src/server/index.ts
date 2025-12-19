@@ -140,7 +140,7 @@ async function main() {
   console.error('[Game Factory] Starting MCP server...');
 
   // Initialize templates
-  initTemplates();
+  await initTemplates();
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

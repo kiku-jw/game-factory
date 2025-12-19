@@ -18,9 +18,9 @@ import { encodeSeed, decodeSeed, isValidSeed } from '../src/shared/seedCodec.js'
 // SETUP
 // =============================================================================
 
-beforeEach(() => {
+beforeEach(async () => {
   RunStore.clear();
-  initTemplates();
+  await initTemplates();
 });
 
 // =============================================================================

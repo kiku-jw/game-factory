@@ -7,10 +7,12 @@ import { RngManager } from '../src/server/engine/RngManager.js';
 import { GameEngine } from '../src/server/engine/GameEngine.js';
 import { handleStartRun } from '../src/server/tools/startRun.js';
 import { handleAct } from '../src/server/tools/act.js';
+import { initTemplates } from '../src/server/engine/TemplateManager.js';
 
 describe('Phase 0 Spike - Quality Gates', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     RunStore.clear();
+    await initTemplates();
   });
 
   // ===========================================================================
