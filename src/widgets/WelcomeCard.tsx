@@ -64,7 +64,6 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
         <div className="space-y-6">
           <div className="relative group">
             <textarea
-              aria-label="Game description"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="e.g. A fast-paced shooter in space..."
@@ -81,7 +80,6 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
                   className="absolute bottom-4 right-4"
                 >
                   <button
-                    aria-label="Build Game"
                     onClick={() => handleStart()}
                     className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-xl font-bold hover:bg-primary-dark transition-all shadow-lg hover:shadow-primary/20"
                   >
@@ -93,12 +91,8 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
             </AnimatePresence>
 
             {loading && (
-              <div
-                role="status"
-                aria-live="polite"
-                className="absolute inset-0 bg-black/40 backdrop-blur-[2px] rounded-2xl flex flex-col items-center justify-center"
-              >
-                <Loader2 className="animate-spin text-primary mb-2" size={32} aria-hidden="true" />
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] rounded-2xl flex flex-col items-center justify-center">
+                <Loader2 className="animate-spin text-primary mb-2" size={32} />
                 <span className="text-xs font-mono text-primary animate-pulse tracking-widest uppercase">Synthesizing World...</span>
               </div>
             )}
