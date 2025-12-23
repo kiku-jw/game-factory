@@ -5,6 +5,7 @@ type Provider = 'openai' | 'openrouter';
 interface ProviderOptions {
     provider: Provider;
     apiKey: string;
+    openRouterModel?: string;
 }
 
 /**
@@ -55,7 +56,7 @@ STRICT TECHNICAL RULES:
 
 OUTPUT: A JSON object with "code" (string) and "preview" (string).`;
 
-function buildProviderConfig({ provider, apiKey }: ProviderOptions) {
+function buildProviderConfig({ provider, apiKey, openRouterModel }: ProviderOptions) {
     if (!apiKey) {
         throw new Error('API key is required');
     }
@@ -74,10 +75,15 @@ function buildProviderConfig({ provider, apiKey }: ProviderOptions) {
         headers['X-Title'] = 'Game Factory';
     }
 
-    const models = {
-        expansion: 'gpt-4o-mini',
-        coding: 'gpt-4o',
-    };
+    const models = provider === 'openrouter'
+        ? {
+            expansion: openRouterModel || 'anthropic/claude-3.5-sonnet',
+            coding: openRouterModel || 'anthropic/claude-3.5-sonnet',
+        }
+        : {
+            expansion: 'gpt-4o-mini',
+            coding: 'gpt-4o',
+        };
 
     return { baseUrl, headers, models };
 }
