@@ -12,14 +12,16 @@ export class DemoDriver implements OpenAIWidgetAPI {
     private onStateChange?: (state: WidgetState) => void;
     private provider: 'openai' | 'openrouter' = 'openai';
     private apiKey = '';
+    private openRouterModel?: string;
 
     constructor(onStateChange?: (state: WidgetState) => void) {
         this.onStateChange = onStateChange;
     }
 
-    setCredentials(provider: 'openai' | 'openrouter', apiKey: string) {
+    setCredentials(provider: 'openai' | 'openrouter', apiKey: string, openRouterModel?: string) {
         this.provider = provider;
         this.apiKey = apiKey;
+        this.openRouterModel = openRouterModel;
     }
 
     async callTool(name: string, args: Record<string, unknown>): Promise<ToolResult> {
@@ -38,6 +40,7 @@ export class DemoDriver implements OpenAIWidgetAPI {
                 const synthesized = await generateGameCode(args.prompt as string, {
                     provider: this.provider,
                     apiKey: this.apiKey,
+                    openRouterModel: this.openRouterModel,
                 });
                 console.log('[DemoDriver] Synthesis result:', synthesized.preview);
 
