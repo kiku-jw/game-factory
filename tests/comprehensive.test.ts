@@ -13,6 +13,7 @@ import { handleEndRun } from '../src/server/tools/endRun.js';
 import { handleExportChallenge } from '../src/server/tools/exportChallenge.js';
 import { validateContent, sanitizeUserInput, sanitizeCustomTags } from '../src/server//../shared/safetyRules.js';
 import { encodeSeed, decodeSeed, isValidSeed } from '../src/shared/seedCodec.js';
+import { RateLimiter } from '../src/server/security/RateLimiter.js';
 
 // =============================================================================
 // SETUP
@@ -20,6 +21,7 @@ import { encodeSeed, decodeSeed, isValidSeed } from '../src/shared/seedCodec.js'
 
 beforeEach(async () => {
   RunStore.clear();
+  RateLimiter.reset(); // Reset rate limits for tests
   await initTemplates();
 });
 
