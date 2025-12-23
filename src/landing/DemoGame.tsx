@@ -19,6 +19,25 @@ export function DemoGame() {
     const [logs, setLogs] = useState<string[]>([]);
     const [showBridge, setShowBridge] = useState(false);
     const [provider, setProvider] = useState<'openai' | 'openrouter'>('openai');
+    const openRouterModels = [
+        {
+            id: 'anthropic/claude-3.5-sonnet',
+            label: 'Claude 3.5 Sonnet — balanced design + code',
+        },
+        {
+            id: 'openai/gpt-4.1',
+            label: 'GPT-4.1 — strong reasoning and tooling',
+        },
+        {
+            id: 'deepseek/deepseek-chat',
+            label: 'DeepSeek V3 — fast iterations',
+        },
+        {
+            id: 'gryphe/mythomax-l2-13b',
+            label: 'MythoMax 13B — free community tier',
+        },
+    ] as const;
+    const [openRouterModel, setOpenRouterModel] = useState<typeof openRouterModels[number]['id']>(openRouterModels[0].id);
     const [apiKey, setApiKey] = useState('');
     const apiInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -32,19 +51,26 @@ export function DemoGame() {
     useEffect(() => {
         const storedProvider = localStorage.getItem('game-factory-provider') as 'openai' | 'openrouter' | null;
         const storedKey = localStorage.getItem('game-factory-api-key');
+        const storedModel = localStorage.getItem('game-factory-openrouter-model') as typeof openRouterModels[number]['id'] | null;
         if (storedProvider) {
             setProvider(storedProvider);
         }
         if (storedKey) {
             setApiKey(storedKey);
         }
+        if (storedModel) {
+            setOpenRouterModel(storedModel);
+        }
     }, []);
 
     useEffect(() => {
-        driver.setCredentials(provider, apiKey.trim());
+        driver.setCredentials(provider, apiKey.trim(), openRouterModel);
         localStorage.setItem('game-factory-provider', provider);
         localStorage.setItem('game-factory-api-key', apiKey);
-    }, [driver, provider, apiKey]);
+        if (provider === 'openrouter') {
+            localStorage.setItem('game-factory-openrouter-model', openRouterModel);
+        }
+    }, [driver, provider, apiKey, openRouterModel]);
 
     useEffect(() => {
         const originalCall = driver.callTool.bind(driver);
@@ -94,6 +120,31 @@ export function DemoGame() {
                             {canStartRun ? 'Ready to synthesize' : 'Add a valid key to start'}
                         </div>
                     </div>
+
+                    {provider === 'openrouter' && (
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-text-secondary font-semibold">
+                                <span className="w-2 h-2 rounded-full bg-primary" /> Choose your OpenRouter model
+                            </div>
+                            <div className="grid gap-2 sm:grid-cols-2">
+                                {openRouterModels.map(model => (
+                                    <button
+                                        key={model.id}
+                                        onClick={() => setOpenRouterModel(model.id)}
+                                        className={`text-left p-3 rounded-xl border transition-colors bg-white/5 hover:bg-white/10 ${openRouterModel === model.id ? 'border-primary/60 shadow-lg shadow-primary/10' : 'border-white/10'}`}
+                                        disabled={!canStartRun}
+                                    >
+                                        <div className="text-sm font-semibold text-white flex items-center gap-2">
+                                            <span className={`w-2 h-2 rounded-full ${openRouterModel === model.id ? 'bg-primary' : 'bg-white/30'}`} />
+                                            {model.label}
+                                        </div>
+                                        <p className="text-[11px] text-text-secondary mt-1 break-words">{model.id}</p>
+                                    </button>
+                                ))}
+                            </div>
+                            <p className="text-[11px] text-text-secondary">Best picks for 23 Dec 2025. MythoMax 13B is the free community option.</p>
+                        </div>
+                    )}
                 </div>
 
                 <div className="relative min-h-[600px] glass-morphism rounded-3xl overflow-hidden p-0 border border-primary/20 bg-black/40 shadow-2xl">
