@@ -21,20 +21,20 @@ export function DemoGame() {
     const [provider, setProvider] = useState<'openai' | 'openrouter'>('openai');
     const openRouterModels = [
         {
-            id: 'anthropic/claude-3.5-sonnet',
-            label: 'Claude 3.5 Sonnet — balanced design + code',
+            id: 'openai/gpt-5.1-codex',
+            label: 'GPT-5.1 Codex — frontier coding + gameplay tuning',
         },
         {
-            id: 'openai/gpt-4.1',
-            label: 'GPT-4.1 — strong reasoning and tooling',
+            id: 'anthropic/claude-4.2-sonnet',
+            label: 'Claude 4.2 Sonnet — balanced design + reasoning',
         },
         {
-            id: 'deepseek/deepseek-chat',
-            label: 'DeepSeek V3 — fast iterations',
+            id: 'deepseek/deepseek-r1',
+            label: 'DeepSeek R1 — fast iterative prototyping',
         },
         {
-            id: 'gryphe/mythomax-l2-13b',
-            label: 'MythoMax 13B — free community tier',
+            id: 'meta-llama/llama-4.1-70b-instruct:free',
+            label: 'Llama 4.1 70B — free open community baseline',
         },
     ] as const;
     const [openRouterModel, setOpenRouterModel] = useState<typeof openRouterModels[number]['id']>(openRouterModels[0].id);
@@ -142,7 +142,7 @@ export function DemoGame() {
                                     </button>
                                 ))}
                             </div>
-                            <p className="text-[11px] text-text-secondary">Best picks for 23 Dec 2025. MythoMax 13B is the free community option.</p>
+                            <p className="text-[11px] text-text-secondary">Best picks for 23 Dec 2025. Llama 4.1 70B is the free community option.</p>
                         </div>
                     )}
                 </div>

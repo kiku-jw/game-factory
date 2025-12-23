@@ -142,76 +142,64 @@ OUTPUT FORMAT:
 Return executable HTML code. Do not include markdown explanations outside the code blocks. If data is missing, invent sensible sample data and return the finished UI without questions
 `;
 
-// Available models for OpenRouter (sorted by capability/price)
+// Available models for OpenRouter (23 Dec 2025 refresh, sorted by capability/price)
 export const AVAILABLE_MODELS = [
   // Free models
   {
-    id: 'x-ai/grok-4.1-fast:free',
-    name: 'xAI: Grok 4.1 Fast (free)',
-    description: 'Free, 2M context, great for testing',
+    id: 'meta-llama/llama-4.1-70b-instruct:free',
+    name: 'Meta: Llama 4.1 70B (free)',
+    description: 'Free, long-context open model that codes well',
     supportsReasoning: true,
   },
   {
-    id: 'google/gemini-2.0-flash-exp:free',
-    name: 'Google: Gemini 2.0 Flash (free)',
-    description: 'Free, fast, 1M context',
-    supportsReasoning: true,
-  },
-  {
-    id: 'meta-llama/llama-3.3-70b-instruct:free',
-    name: 'Meta: Llama 3.3 70B (free)',
-    description: 'Free, powerful open model',
-    supportsReasoning: false,
-  },
-  {
-    id: 'qwen/qwen3-235b-a22b:free',
-    name: 'Qwen: Qwen3 235B (free)',
-    description: 'Free, massive 235B model',
+    id: 'qwen/qwen3.5-120b-instruct:free',
+    name: 'Qwen: Qwen3.5 120B (free)',
+    description: 'Free multilingual powerhouse, great for prototyping',
     supportsReasoning: true,
   },
   // Cheap & fast
   {
-    id: 'deepseek/deepseek-v3.1-terminus',
-    name: 'DeepSeek: V3.1 Terminus',
-    description: 'Very cheap, excellent reasoning',
+    id: 'deepseek/deepseek-r1',
+    name: 'DeepSeek: R1',
+    description: 'Budget-friendly, sharp code reasoning',
     supportsReasoning: true,
   },
   {
-    id: 'openai/gpt-5.1-codex-mini',
-    name: 'OpenAI: GPT-5.1 Codex Mini',
-    description: 'Fast coding model, 400K context',
+    id: 'google/gemini-3.1-flash',
+    name: 'Google: Gemini 3.1 Flash',
+    description: 'Fast multimodal iterations, huge context',
     supportsReasoning: true,
   },
   // Mid-tier
   {
-    id: 'anthropic/claude-haiku-4.5',
-    name: 'Anthropic: Claude Haiku 4.5',
-    description: 'Fast and cheap, good quality',
+    id: 'anthropic/claude-4.2-sonnet',
+    name: 'Anthropic: Claude 4.2 Sonnet',
+    description: 'Balanced design + implementation for game loops',
     supportsReasoning: true,
   },
   {
-    id: 'anthropic/claude-sonnet-4.5',
-    name: 'Anthropic: Claude Sonnet 4.5',
-    description: 'Balanced speed and capability',
-    supportsReasoning: true,
-  },
-  {
-    id: 'openai/gpt-5.1',
-    name: 'OpenAI: GPT-5.1',
-    description: 'Frontier model, adaptive reasoning',
+    id: 'openai/gpt-5.1-mini',
+    name: 'OpenAI: GPT-5.1 Mini',
+    description: '400K context, fast coding co-pilot',
     supportsReasoning: true,
   },
   // Top tier
   {
     id: 'openai/gpt-5.1-codex',
     name: 'OpenAI: GPT-5.1 Codex',
-    description: 'Best for complex coding tasks',
+    description: 'Frontier coding and reasoning for complex games',
     supportsReasoning: true,
   },
   {
-    id: 'google/gemini-3-pro-preview',
-    name: 'Google: Gemini 3 Pro',
-    description: '1M context, multimodal reasoning',
+    id: 'x-ai/grok-4.2',
+    name: 'xAI: Grok 4.2',
+    description: 'High-context reasoning with strong tool use',
+    supportsReasoning: true,
+  },
+  {
+    id: 'google/gemini-3.1-pro',
+    name: 'Google: Gemini 3.1 Pro',
+    description: '1M context multimodal reasoning for asset-rich flows',
     supportsReasoning: true,
   },
 ] as const;
@@ -284,7 +272,7 @@ function extractHTMLFromResponse(content: string): string {
 export async function generateHTMLWithOpenRouter({
   prompt,
   apiKey,
-  model = 'x-ai/grok-4.1-fast:free',
+  model = 'meta-llama/llama-4.1-70b-instruct:free',
   systemPrompt,
 }: {
   prompt: string;
@@ -397,9 +385,9 @@ export async function generateHTMLWithOpenRouter({
   }
 }
 
-const FREE_GROK_MODEL = 'x-ai/grok-4.1-fast:free';
+const FREE_COMMUNITY_MODEL = 'meta-llama/llama-4.1-70b-instruct:free';
 
-export async function expandPromptWithGrok({
+export async function expandPromptWithOpenRouter({
   prompt,
   apiKey,
 }: {
@@ -427,12 +415,12 @@ export async function expandPromptWithGrok({
   const controller = new AbortController();
   const timeout = setTimeout(() => {
     const elapsed = Math.round((Date.now() - startTime) / 1000);
-    console.error(`[Grok] Expansion timeout after ${elapsed}s, aborting...`);
+    console.error(`[OpenRouter] Expansion timeout after ${elapsed}s, aborting...`);
     controller.abort();
   }, TIMEOUT_MS);
 
   try {
-    console.log('[Grok] Starting prompt expansion, timeout:', TIMEOUT_MS / 1000, 's');
+    console.log('[OpenRouter] Starting prompt expansion, timeout:', TIMEOUT_MS / 1000, 's');
     const response = await fetch(`${OPENROUTER_API_BASE}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -442,7 +430,7 @@ export async function expandPromptWithGrok({
         'X-Title': 'Vibe Coding TG App',
       },
       body: JSON.stringify({
-        model: FREE_GROK_MODEL,
+        model: FREE_COMMUNITY_MODEL,
         messages,
         reasoning: {
           effort: 'high',
@@ -455,32 +443,32 @@ export async function expandPromptWithGrok({
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Grok expansion error (${response.status}): ${errorText}`);
+      throw new Error(`OpenRouter expansion error (${response.status}): ${errorText}`);
     }
 
     const data = (await response.json()) as OpenRouterResponse;
 
     if (!data.choices || data.choices.length === 0) {
-      throw new Error('No response from Grok');
+      throw new Error('No response from OpenRouter expansion');
     }
 
     const elapsed = Math.round((Date.now() - startTime) / 1000);
-    console.log(`[Grok] Expansion completed in ${elapsed}s`);
+    console.log(`[OpenRouter] Expansion completed in ${elapsed}s`);
     return data.choices[0].message.content;
   } catch (error) {
     const elapsed = Math.round((Date.now() - startTime) / 1000);
 
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        console.error(`[Grok] Expansion was aborted after ${elapsed}s (our timeout: ${TIMEOUT_MS / 1000}s)`);
+        console.error(`[OpenRouter] Expansion was aborted after ${elapsed}s (our timeout: ${TIMEOUT_MS / 1000}s)`);
         throw new Error(`Expansion timeout after ${elapsed}s: took too long`);
       }
-      console.error(`[Grok] Expansion error after ${elapsed}s:`, {
+      console.error(`[OpenRouter] Expansion error after ${elapsed}s:`, {
         name: error.name,
         message: error.message,
       });
     } else {
-      console.error(`[Grok] Unknown expansion error after ${elapsed}s:`, error);
+      console.error(`[OpenRouter] Unknown expansion error after ${elapsed}s:`, error);
     }
     throw error;
   } finally {

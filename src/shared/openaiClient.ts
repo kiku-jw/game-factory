@@ -77,8 +77,8 @@ function buildProviderConfig({ provider, apiKey, openRouterModel }: ProviderOpti
 
     const models = provider === 'openrouter'
         ? {
-            expansion: openRouterModel || 'anthropic/claude-3.5-sonnet',
-            coding: openRouterModel || 'anthropic/claude-3.5-sonnet',
+            expansion: openRouterModel || 'openai/gpt-5.1-codex',
+            coding: openRouterModel || 'openai/gpt-5.1-codex',
         }
         : {
             expansion: 'gpt-4o-mini',
