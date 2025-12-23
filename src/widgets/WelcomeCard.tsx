@@ -8,6 +8,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface WelcomeCardProps {
   onStartRun: (result: unknown) => void;
   existingRun?: boolean;
+  canStart: boolean;
+  onMissingKey?: () => void;
+  provider: 'openai' | 'openrouter';
 }
 
 const SUGGESTIONS = [
@@ -18,13 +21,17 @@ const SUGGESTIONS = [
   "Retro pixel-art knight in a lava castle",
 ];
 
-export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
+export function WelcomeCard({ onStartRun, existingRun, canStart, onMissingKey, provider }: WelcomeCardProps) {
   const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleStart = async (customPrompt?: string) => {
     const finalPrompt = customPrompt || prompt;
     if (!finalPrompt && !customPrompt) return;
+    if (!canStart) {
+      onMissingKey?.();
+      return;
+    }
 
     setLoading(true);
     try {
@@ -81,7 +88,8 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
                 >
                   <button
                     onClick={() => handleStart()}
-                    className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-xl font-bold hover:bg-primary-dark transition-all shadow-lg hover:shadow-primary/20"
+                    disabled={loading || !canStart}
+                    className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-xl font-bold hover:bg-primary-dark transition-all shadow-lg hover:shadow-primary/20 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <Play size={16} fill="currentColor" />
                     BUILD
@@ -101,8 +109,8 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleSurpriseMe}
-              disabled={loading}
-              className="flex-1 px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2 group"
+              disabled={loading || !canStart}
+              className="flex-1 px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2 group disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <Dice5 size={18} className="text-purple-400 group-hover:rotate-45 transition-transform" />
               Surprise Me
@@ -122,6 +130,16 @@ export function WelcomeCard({ onStartRun, existingRun }: WelcomeCardProps) {
             </div>
           </div>
         </div>
+
+        <p className="text-xs text-text-secondary mt-4 text-center">
+          Using your {provider === 'openai' ? 'OpenAI' : 'OpenRouter'} key. Stored locally for this demo session.
+        </p>
+
+        {!canStart && (
+          <p className="text-[11px] text-yellow-300/80 mt-2 text-center uppercase tracking-wide">
+            Enter your API key above to enable game synthesis.
+          </p>
+        )}
 
         {existingRun && (
           <footer className="mt-8 pt-6 border-t border-white/5 flex justify-center">
