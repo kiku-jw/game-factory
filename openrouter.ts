@@ -146,72 +146,72 @@ Return executable HTML code. Do not include markdown explanations outside the co
 export const AVAILABLE_MODELS = [
   // Free models
   {
-    id: 'x-ai/grok-4.1-fast:free',
-    name: 'xAI: Grok 4.1 Fast (free)',
-    description: 'Free, 2M context, great for testing',
+    id: 'x-ai/grok-4.2-mini:free',
+    name: 'xAI: Grok 4.2 Mini (free)',
+    description: 'Free, 2M context, latest Grok mini refresh',
     supportsReasoning: true,
   },
   {
-    id: 'google/gemini-2.0-flash-exp:free',
-    name: 'Google: Gemini 2.0 Flash (free)',
-    description: 'Free, fast, 1M context',
+    id: 'google/gemini-3.0-flash-lite:free',
+    name: 'Google: Gemini 3.0 Flash Lite (free)',
+    description: 'Free, fast, 1M context, 2025 refresh',
     supportsReasoning: true,
   },
   {
-    id: 'meta-llama/llama-3.3-70b-instruct:free',
-    name: 'Meta: Llama 3.3 70B (free)',
-    description: 'Free, powerful open model',
+    id: 'meta-llama/llama-4.1-70b-instruct:free',
+    name: 'Meta: Llama 4.1 70B (free)',
+    description: 'Free, powerful open model (2025)',
     supportsReasoning: false,
   },
   {
-    id: 'qwen/qwen3-235b-a22b:free',
-    name: 'Qwen: Qwen3 235B (free)',
-    description: 'Free, massive 235B model',
+    id: 'qwen/qwen4-72b-instruct:free',
+    name: 'Qwen: Qwen4 72B (free)',
+    description: 'Free, updated Qwen4 instruction model',
     supportsReasoning: true,
   },
   // Cheap & fast
   {
-    id: 'deepseek/deepseek-v3.1-terminus',
-    name: 'DeepSeek: V3.1 Terminus',
-    description: 'Very cheap, excellent reasoning',
+    id: 'deepseek/deepseek-v4-terminus',
+    name: 'DeepSeek: V4 Terminus',
+    description: 'Very cheap, excellent reasoning (2025 refresh)',
     supportsReasoning: true,
   },
   {
-    id: 'openai/gpt-5.1-codex-mini',
-    name: 'OpenAI: GPT-5.1 Codex Mini',
-    description: 'Fast coding model, 400K context',
+    id: 'openai/gpt-5.2-codex-mini',
+    name: 'OpenAI: GPT-5.2 Codex Mini',
+    description: 'Fast coding model, 400K context (latest mini)',
     supportsReasoning: true,
   },
   // Mid-tier
   {
-    id: 'anthropic/claude-haiku-4.5',
-    name: 'Anthropic: Claude Haiku 4.5',
-    description: 'Fast and cheap, good quality',
+    id: 'anthropic/claude-4.2-haiku',
+    name: 'Anthropic: Claude 4.2 Haiku',
+    description: 'Fast and cheap, latest Haiku',
     supportsReasoning: true,
   },
   {
-    id: 'anthropic/claude-sonnet-4.5',
-    name: 'Anthropic: Claude Sonnet 4.5',
-    description: 'Balanced speed and capability',
+    id: 'anthropic/claude-4.2-sonnet',
+    name: 'Anthropic: Claude 4.2 Sonnet',
+    description: 'Balanced speed and capability (2025)',
     supportsReasoning: true,
   },
   {
-    id: 'openai/gpt-5.1',
-    name: 'OpenAI: GPT-5.1',
-    description: 'Frontier model, adaptive reasoning',
+    id: 'openai/gpt-5.2',
+    name: 'OpenAI: GPT-5.2',
+    description: 'Frontier model, adaptive reasoning (2025)',
     supportsReasoning: true,
   },
   // Top tier
   {
-    id: 'openai/gpt-5.1-codex',
-    name: 'OpenAI: GPT-5.1 Codex',
-    description: 'Best for complex coding tasks',
+    id: 'openai/gpt-5.2-codex',
+    name: 'OpenAI: GPT-5.2 Codex',
+    description: 'Best for complex coding tasks (latest Codex)',
     supportsReasoning: true,
   },
   {
-    id: 'google/gemini-3-pro-preview',
-    name: 'Google: Gemini 3 Pro',
-    description: '1M context, multimodal reasoning',
+    id: 'google/gemini-3.0-pro',
+    name: 'Google: Gemini 3.0 Pro',
+    description: '1M context, multimodal reasoning (2025 stable)',
     supportsReasoning: true,
   },
 ] as const;
@@ -284,7 +284,7 @@ function extractHTMLFromResponse(content: string): string {
 export async function generateHTMLWithOpenRouter({
   prompt,
   apiKey,
-  model = 'x-ai/grok-4.1-fast:free',
+  model = 'x-ai/grok-4.2-mini:free',
   systemPrompt,
 }: {
   prompt: string;
@@ -397,7 +397,7 @@ export async function generateHTMLWithOpenRouter({
   }
 }
 
-const FREE_GROK_MODEL = 'x-ai/grok-4.1-fast:free';
+const FREE_GROK_MODEL = 'x-ai/grok-4.2-mini:free';
 
 export async function expandPromptWithGrok({
   prompt,
