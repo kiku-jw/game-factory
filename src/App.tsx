@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hero } from './landing/Hero';
 import { DemoGame } from './landing/DemoGame';
@@ -23,11 +23,13 @@ export default function App() {
         return () => window.removeEventListener('popstate', handlePopState);
     }, []);
 
-    const navigate = (to: Page) => {
+    const navigate = useCallback((to: Page) => {
         setPage(to);
         window.location.hash = to === 'home' ? '' : to;
         window.scrollTo(0, 0);
-    };
+    }, []);
+
+    const handleStartGame = useCallback(() => navigate('demo'), [navigate]);
 
     return (
         <div className="min-h-screen flex flex-col selection:bg-primary/30">
@@ -63,7 +65,7 @@ export default function App() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                         >
-                            <Hero onStartGame={() => navigate('demo')} />
+                            <Hero onStartGame={handleStartGame} />
                         </motion.div>
                     )}
 
