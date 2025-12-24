@@ -51,10 +51,11 @@ export function SceneCard({
       });
 
       // Update widget state
-      const outcome = (result.structuredContent as any)?.outcome;
+      const content = result.structuredContent as { outcome?: string; turn?: number };
+      const outcome = content?.outcome;
       if (outcome === 'success' || outcome === 'out_of_sync') {
         await window.openai.setWidgetState({
-          lastKnownTurn: (result.structuredContent as any)?.turn || turn + 1,
+          lastKnownTurn: content?.turn || turn + 1,
         });
         onChoice(result);
       } else if (outcome === 'pending_consequence') {

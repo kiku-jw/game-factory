@@ -6,7 +6,7 @@ import { STATE_CONFIG } from '../../shared/constants.js';
  */
 class RunStoreImpl {
   private runs: Map<string, GameState> = new Map();
-  private cleanupTimer: any = null;
+  private cleanupTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
     this.startCleanup();
@@ -55,7 +55,7 @@ class RunStoreImpl {
 
     // Node.js specific: don't block process exit
     if (this.cleanupTimer && typeof this.cleanupTimer === 'object' && 'unref' in this.cleanupTimer) {
-      (this.cleanupTimer as any).unref();
+      (this.cleanupTimer as { unref: () => void }).unref();
     }
   }
 

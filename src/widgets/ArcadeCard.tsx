@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Gamepad2, Trophy, RefreshCw } from 'lucide-react';
 
 interface ArcadeCardProps {
     onChoice: (choiceId: string) => void;
     genre: string;
     difficulty: string;
-    hp: number;
+    hp?: number; // Reserved for future use
     runRef: string;
 }
 
-export function ArcadeCard({ onChoice, genre, difficulty, hp, runRef }: ArcadeCardProps) {
+export function ArcadeCard({ onChoice, genre, difficulty, runRef }: ArcadeCardProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
     const [score, setScore] = useState(0);
@@ -55,7 +54,7 @@ export function ArcadeCard({ onChoice, genre, difficulty, hp, runRef }: ArcadeCa
             return obs;
         };
 
-        const generateCoins = (obs: any[]) => {
+        const generateCoins = (obs: Array<{ x: number; y: number; w: number; h: number }>) => {
             return obs.slice(1, 11).map(o => ({
                 x: o.x + o.w / 2,
                 y: o.y - 30,

@@ -14,7 +14,6 @@ import type {
   Consequence,
   ConsequenceState,
   StartRunInput,
-  ActInput,
   ThreatLevel,
   ChoiceCost,
 } from '../types/index.js';
@@ -303,7 +302,7 @@ export class GameEngine {
     return genres[Math.floor(Math.random() * genres.length)];
   }
 
-  private static generateInitialScene(settings: GameSettings, seed: string): Scene {
+  private static generateInitialScene(settings: GameSettings, _seed: string): Scene {
     // For spike, use simple hardcoded scenes based on genre
     const scenesByGenre: Record<string, Scene> = {
       'fantasy': {
@@ -367,9 +366,8 @@ export class GameEngine {
     return scenesByGenre[settings.genre] || scenesByGenre['fantasy'];
   }
 
-  private static generateNextScene(state: GameState, previousChoice: Choice | null): Scene {
+  private static generateNextScene(state: GameState, _previousChoice: Choice | null): Scene {
     // For spike, generate simple continuation scenes
-    const turnMod = state.turn % 3;
     const baseRisk = state.threatLevel === 'high' ? 60 : state.threatLevel === 'medium' ? 70 : 80;
 
     return {
@@ -403,7 +401,7 @@ export class GameEngine {
     };
   }
 
-  private static generateConsequences(state: GameState, choice: Choice): Consequence[] {
+  private static generateConsequences(_state: GameState, _choice: Choice): Consequence[] {
     return [
       {
         id: 'f1',

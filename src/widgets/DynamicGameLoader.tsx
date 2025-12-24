@@ -45,9 +45,9 @@ export function DynamicGameLoader({ code, onReset }: DynamicGameLoaderProps) {
             }
             setComponent(() => DynamicComp);
             setError(null);
-        } catch (err: any) {
+        } catch (err) {
             console.error('[DynamicGameLoader] Code execution error:', err);
-            setError(err.message);
+            setError(err instanceof Error ? err.message : String(err));
         } finally {
             setLoading(false);
         }

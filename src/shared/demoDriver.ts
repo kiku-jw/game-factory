@@ -21,7 +21,6 @@ export class DemoDriver implements OpenAIWidgetAPI {
         await new Promise(resolve => setTimeout(resolve, 800));
 
         try {
-            let result: any;
             if (name === 'start_run' && args.prompt) {
                 console.log('[DemoDriver] Code-gen path triggered for prompt:', args.prompt);
                 const synthesized = await generateGameCode(args.prompt as string);
@@ -34,7 +33,7 @@ export class DemoDriver implements OpenAIWidgetAPI {
                 };
 
                 const newState: Partial<WidgetState> = {
-                    view: 'ArcadeCard' as any,
+                    view: 'ArcadeCard',
                     arcade: {
                         code: synthesized.code,
                         genre: synthesized.preview,
@@ -46,30 +45,32 @@ export class DemoDriver implements OpenAIWidgetAPI {
 
                 console.log('[DemoDriver] Setting state with code length:', synthesized.code.length);
                 await this.setWidgetState(newState);
-                return { structuredContent: sc, _meta: { runRef: 'vibe-' + Date.now() } } as any;
+                return { structuredContent: sc, _meta: { runRef: 'vibe-' + Date.now() } };
             }
 
+            let result: ToolResult;
+
             switch (name) {
-                case 'list_templates': result = handleListTemplates(args); break;
-                case 'start_run': result = handleStartRun(args); break;
-                case 'act': result = handleAct(args); break;
-                case 'end_run': result = handleEndRun(args); break;
-                case 'export_challenge': result = handleExportChallenge(args); break;
+                case 'list_templates': result = handleListTemplates(args) as unknown as ToolResult; break;
+                case 'start_run': result = handleStartRun(args) as unknown as ToolResult; break;
+                case 'act': result = handleAct(args) as unknown as ToolResult; break;
+                case 'end_run': result = handleEndRun(args) as unknown as ToolResult; break;
+                case 'export_challenge': result = handleExportChallenge(args) as unknown as ToolResult; break;
                 default: throw new Error(`Unknown tool: ${name}`);
             }
 
             // Automap outcomes to views for the demo
             if (result.structuredContent) {
-                const sc = result.structuredContent;
-                const view = this.mapOutcomeToView();
+                const sc = result.structuredContent as { hp?: number };
+                const meta = result._meta as { worldName?: string; runRef?: string } | undefined;
 
                 const newState: Partial<WidgetState> = {
                     view: 'ArcadeCard',
                     arcade: {
-                        genre: result._meta.worldName || 'Fantasy',
+                        genre: meta?.worldName || 'Fantasy',
                         difficulty: 'Normal',
                         hp: sc.hp || 10,
-                        runRef: result._meta.runRef
+                        runRef: meta?.runRef || ''
                     }
                 };
 
@@ -81,10 +82,6 @@ export class DemoDriver implements OpenAIWidgetAPI {
             console.error(`[DemoDriver] Error:`, error);
             throw error;
         }
-    }
-
-    private mapOutcomeToView(): string {
-        return 'ArcadeCard';
     }
 
     async setWidgetState(state: Partial<WidgetState>): Promise<void> {

@@ -34,7 +34,7 @@ export function DemoGame() {
             setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] SUCCESS: ${name}`]);
             return res;
         };
-        (window as any).openai = driver;
+        (window as unknown as { openai: typeof driver }).openai = driver;
     }, [driver]);
 
     return (
@@ -56,10 +56,8 @@ export function DemoGame() {
                             className="flex justify-center items-center h-full min-h-[500px]"
                         >
                             {step === 'WelcomeCard' && (
-                                <WelcomeCard onStartRun={(res) => {
-                                    if (res && (res as any).continue) {
-                                        // Handle resume if needed
-                                    }
+                                <WelcomeCard onStartRun={(_res) => {
+                                    // Handle resume if needed
                                 }} />
                             )}
 

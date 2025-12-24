@@ -20,10 +20,9 @@ export async function initTemplates(): Promise<void> {
 
   if (isBrowser) {
     // In Browser: Use Vite's glob import
-    // @ts-ignore
-    const globTemplates = import.meta.glob('../../../templates/**/*.json', { eager: true });
+    const globTemplates: Record<string, { default: GameTemplate }> = import.meta.glob('../../../templates/**/*.json', { eager: true });
     for (const path in globTemplates) {
-      const template = (globTemplates[path] as any).default as GameTemplate;
+      const template = globTemplates[path].default;
       if (template && template.id) {
         templates.set(template.id, template);
       }

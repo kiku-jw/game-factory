@@ -67,8 +67,8 @@ export interface WidgetState {
 }
 
 export interface ToolResult {
-  structuredContent: any;
-  _meta?: Record<string, any>;
+  structuredContent: Record<string, unknown>;
+  _meta?: Record<string, unknown>;
 }
 
 // Choice display
