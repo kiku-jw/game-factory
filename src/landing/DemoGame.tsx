@@ -13,30 +13,33 @@ import type { WidgetState } from '../widgets/types';
 
 type WidgetType = 'WelcomeCard' | 'SceneCard' | 'ConsequenceCard' | 'EndRunCard' | 'ArcadeCard';
 
+// Performance: Move constant outside component to avoid recreation on every render
+const openRouterModels = [
+    {
+        id: 'anthropic/claude-3.5-sonnet',
+        label: 'Claude 3.5 Sonnet — balanced design + code',
+    },
+    {
+        id: 'openai/gpt-4.1',
+        label: 'GPT-4.1 — strong reasoning and tooling',
+    },
+    {
+        id: 'deepseek/deepseek-chat',
+        label: 'DeepSeek V3 — fast iterations',
+    },
+    {
+        id: 'gryphe/mythomax-l2-13b',
+        label: 'MythoMax 13B — free community tier',
+    },
+] as const;
+
 export function DemoGame() {
     const [step, setStep] = useState<WidgetType>('WelcomeCard');
     const [widgetState, setWidgetState] = useState<WidgetState | null>(null);
     const [logs, setLogs] = useState<string[]>([]);
     const [showBridge, setShowBridge] = useState(false);
     const [provider, setProvider] = useState<'openai' | 'openrouter'>('openai');
-    const openRouterModels = [
-        {
-            id: 'anthropic/claude-3.5-sonnet',
-            label: 'Claude 3.5 Sonnet — balanced design + code',
-        },
-        {
-            id: 'openai/gpt-4.1',
-            label: 'GPT-4.1 — strong reasoning and tooling',
-        },
-        {
-            id: 'deepseek/deepseek-chat',
-            label: 'DeepSeek V3 — fast iterations',
-        },
-        {
-            id: 'gryphe/mythomax-l2-13b',
-            label: 'MythoMax 13B — free community tier',
-        },
-    ] as const;
+
     const [openRouterModel, setOpenRouterModel] = useState<typeof openRouterModels[number]['id']>(openRouterModels[0].id);
     const [apiKey, setApiKey] = useState('');
     const apiInputRef = useRef<HTMLInputElement | null>(null);
