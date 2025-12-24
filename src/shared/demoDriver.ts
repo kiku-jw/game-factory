@@ -10,9 +10,18 @@ import type { OpenAIWidgetAPI, WidgetState, ToolResult } from '../widgets/types'
 export class DemoDriver implements OpenAIWidgetAPI {
     public widgetState: WidgetState = {};
     private onStateChange?: (state: WidgetState) => void;
+    private provider: 'openai' | 'openrouter' = 'openai';
+    private apiKey = '';
+    private openRouterModel?: string;
 
     constructor(onStateChange?: (state: WidgetState) => void) {
         this.onStateChange = onStateChange;
+    }
+
+    setCredentials(provider: 'openai' | 'openrouter', apiKey: string, openRouterModel?: string) {
+        this.provider = provider;
+        this.apiKey = apiKey;
+        this.openRouterModel = openRouterModel;
     }
 
     async callTool(name: string, args: Record<string, unknown>): Promise<ToolResult> {
@@ -22,8 +31,16 @@ export class DemoDriver implements OpenAIWidgetAPI {
 
         try {
             if (name === 'start_run' && args.prompt) {
+                if (!this.apiKey) {
+                    throw new Error('Please provide an API key to start a run.');
+                }
+
                 console.log('[DemoDriver] Code-gen path triggered for prompt:', args.prompt);
-                const synthesized = await generateGameCode(args.prompt as string);
+                const synthesized = await generateGameCode(args.prompt as string, {
+                    provider: this.provider,
+                    apiKey: this.apiKey,
+                    openRouterModel: this.openRouterModel,
+                });
                 console.log('[DemoDriver] Synthesis result:', synthesized.preview);
 
                 const sc = {

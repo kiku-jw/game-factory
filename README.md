@@ -31,13 +31,14 @@ graph TD
     end
     
     subgraph UI Components
+        UI[UI Components]
         WC[WelcomeCard]
         SC[SceneCard]
         CC[ConsequenceCard]
         EC[EndRunCard]
     end
-    
-    ToolServer -- renders via --> UI Components
+
+    ToolServer -- "renders via" --> UI
 ```
 
 ## 🛠 MCP Tools

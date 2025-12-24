@@ -2,6 +2,7 @@
 
 import { z } from 'zod';
 import { GameEngine, ActionResult } from '../engine/GameEngine.js';
+import { RateLimiter } from '../security/RateLimiter.js';
 import type {
   ActOutput,
   ActSuccessOutput,
@@ -66,6 +67,11 @@ export function handleAct(input: unknown): {
   structuredContent: ActOutput;
   _meta: ActMeta;
 } {
+  // Rate Limit Check (Global for Stdio)
+  if (!RateLimiter.check('global', 'act')) {
+    throw new Error('Rate limit exceeded for act. Please try again later.');
+  }
+
   // Validate input
   const parsed = ActInputSchema.parse(input);
   const { runRef, actionId, clientTurn } = parsed;

@@ -2,6 +2,8 @@
 
 import { z } from 'zod';
 import { GameEngine } from '../engine/GameEngine.js';
+import { RateLimiter } from '../security/RateLimiter.js';
+import { sanitizeUserInput } from '../../shared/safetyRules.js';
 import type {
   StartRunInput,
   StartRunOutput,
@@ -89,8 +91,18 @@ export function handleStartRun(input: unknown): {
   structuredContent: StartRunOutput;
   _meta: StartRunMeta;
 } {
+  // Rate Limit Check (Global for Stdio)
+  if (!RateLimiter.check('global', 'startRun')) {
+    throw new Error('Rate limit exceeded for start_run. Please try again later.');
+  }
+
   // Validate input
   const parsed = StartRunInputSchema.parse(input);
+
+  // Sanitize prompt if present
+  if (parsed.prompt) {
+    parsed.prompt = sanitizeUserInput(parsed.prompt);
+  }
 
   // Create the run
   const state = GameEngine.createRun(parsed as StartRunInput);

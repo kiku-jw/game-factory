@@ -1,7 +1,15 @@
 /// <reference types="vite/client" />
 
+type Provider = 'openai' | 'openrouter';
+
+interface ProviderOptions {
+    provider: Provider;
+    apiKey: string;
+    openRouterModel?: string;
+}
+
 /**
- * EXPANSION_SYSTEM_PROMPT: 
+ * EXPANSION_SYSTEM_PROMPT:
  * Used to turn a simple idea into a detailed technical specification.
  */
 const EXPANSION_SYSTEM_PROMPT = `You are a Lead Game Architect at KikuAI. Your task is to expand a user's prompt into a high-fidelity implementation spec.
@@ -48,15 +56,47 @@ STRICT TECHNICAL RULES:
 
 OUTPUT: A JSON object with "code" (string) and "preview" (string).`;
 
-export async function generateNarrative(prompt: string): Promise<string> {
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (!apiKey) return '';
+function buildProviderConfig({ provider, apiKey, openRouterModel }: ProviderOptions) {
+    if (!apiKey) {
+        throw new Error('API key is required');
+    }
+
+    const baseUrl = provider === 'openrouter'
+        ? 'https://openrouter.ai/api/v1'
+        : 'https://api.openai.com/v1';
+
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+    };
+
+    if (provider === 'openrouter') {
+        headers['HTTP-Referer'] = window.location.origin;
+        headers['X-Title'] = 'Game Factory';
+    }
+
+    const models = provider === 'openrouter'
+        ? {
+            expansion: openRouterModel || 'anthropic/claude-3.5-sonnet',
+            coding: openRouterModel || 'anthropic/claude-3.5-sonnet',
+        }
+        : {
+            expansion: 'gpt-4o-mini',
+            coding: 'gpt-4o',
+        };
+
+    return { baseUrl, headers, models };
+}
+
+export async function generateNarrative(prompt: string, options: ProviderOptions): Promise<string> {
+    const { baseUrl, headers, models } = buildProviderConfig(options);
+
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        const response = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            headers,
             body: JSON.stringify({
-                model: 'gpt-4o-mini',
+                model: models.expansion,
                 messages: [
                     { role: 'system', content: 'You are a game master. Generate immersive narrative summaries.' },
                     { role: 'user', content: prompt }
@@ -72,20 +112,20 @@ export async function generateNarrative(prompt: string): Promise<string> {
     }
 }
 
-export async function generateGameCode(userPrompt: string): Promise<{ code: string; preview: string }> {
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (!apiKey) {
-        return { code: '() => React.createElement("div", {}, "Missing API Key")', preview: "Alpha Fallback" };
-    }
+export async function generateGameCode(
+    userPrompt: string,
+    options: ProviderOptions,
+): Promise<{ code: string; preview: string }> {
+    const { baseUrl, headers, models } = buildProviderConfig(options);
 
     try {
         // STEP 1: EXPANSION - Think about the game first
         console.log('[Synthesis] Step 1: Expanding prompt...');
-        const expansionResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        const expansionResponse = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            headers,
             body: JSON.stringify({
-                model: 'gpt-4o-mini',
+                model: models.expansion,
                 messages: [
                     { role: 'system', content: EXPANSION_SYSTEM_PROMPT },
                     { role: 'user', content: userPrompt }
@@ -100,11 +140,11 @@ export async function generateGameCode(userPrompt: string): Promise<{ code: stri
 
         // STEP 2: IMPLEMENTATION - Code the spec
         console.log('[Synthesis] Step 2: Implementing code...');
-        const codeResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        const codeResponse = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            headers,
             body: JSON.stringify({
-                model: 'gpt-4o',
+                model: models.coding,
                 messages: [
                     { role: 'system', content: CODING_SYSTEM_PROMPT },
                     { role: 'user', content: `Implement this game specification: ${spec}` }

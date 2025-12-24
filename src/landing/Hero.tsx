@@ -6,7 +6,35 @@ interface HeroProps {
     onStartGame: () => void;
 }
 
-export function Hero({ onStartGame }: HeroProps) {
+const FEATURES = [
+    {
+        icon: <Gamepad2 className="text-primary" />,
+        title: "Instant Gameplay",
+        description: "Pick a template and start playing immediately. No tutorial or prompts required."
+    },
+    {
+        icon: <Zap className="text-primary" />,
+        title: "Adaptive Physics",
+        description: "Every prompt changes the gravity, speed, and level design of your arcade mission."
+    },
+    {
+        icon: <ShieldCheck className="text-primary" />,
+        title: "Privacy First",
+        description: "Zero personal data collection. Session-only state with hard-coded 4h retention."
+    }
+];
+
+const FeatureCard = React.memo(({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => {
+    return (
+        <div className="p-8 rounded-2xl glass-morphism space-y-4 hover:border-primary/50 transition-colors group">
+            <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">{icon}</div>
+            <h3 className="text-xl font-bold">{title}</h3>
+            <p className="text-sm text-text-secondary leading-relaxed">{description}</p>
+        </div>
+    );
+});
+
+export const Hero = React.memo(function Hero({ onStartGame }: HeroProps) {
     return (
         <div className="relative overflow-hidden pt-20 pb-24 md:pt-32 md:pb-32">
             {/* Background elements */}
@@ -125,32 +153,10 @@ export function Hero({ onStartGame }: HeroProps) {
 
             {/* Feature section */}
             <div className="max-w-6xl mx-auto px-6 mt-32 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <FeatureCard
-                    icon={<Gamepad2 className="text-primary" />}
-                    title="Instant Gameplay"
-                    description="Pick a template and start playing immediately. No tutorial or prompts required."
-                />
-                <FeatureCard
-                    icon={<Zap className="text-primary" />}
-                    title="Adaptive Physics"
-                    description="Every prompt changes the gravity, speed, and level design of your arcade mission."
-                />
-                <FeatureCard
-                    icon={<ShieldCheck className="text-primary" />}
-                    title="Privacy First"
-                    description="Zero personal data collection. Session-only state with hard-coded 4h retention."
-                />
+                {FEATURES.map((feature, i) => (
+                    <FeatureCard key={i} {...feature} />
+                ))}
             </div>
         </div>
     );
-}
-
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
-    return (
-        <div className="p-8 rounded-2xl glass-morphism space-y-4 hover:border-primary/50 transition-colors group">
-            <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">{icon}</div>
-            <h3 className="text-xl font-bold">{title}</h3>
-            <p className="text-sm text-text-secondary leading-relaxed">{description}</p>
-        </div>
-    );
-}
+});
