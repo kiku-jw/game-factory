@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Eye, EyeOff } from 'lucide-react';
 import {
     WelcomeCard,
     SceneCard,
@@ -39,6 +40,7 @@ export function DemoGame() {
     ] as const;
     const [openRouterModel, setOpenRouterModel] = useState<typeof openRouterModels[number]['id']>(openRouterModels[0].id);
     const [apiKey, setApiKey] = useState('');
+    const [showApiKey, setShowApiKey] = useState(false);
     const apiInputRef = useRef<HTMLInputElement | null>(null);
 
     const [driver] = useState(() => new DemoDriver((newState: WidgetState) => {
@@ -108,14 +110,26 @@ export function DemoGame() {
                     </div>
 
                     <div className="flex flex-col md:flex-row gap-3">
-                        <input
-                            ref={apiInputRef}
-                            value={apiKey}
-                            onChange={(e) => setApiKey(e.target.value)}
-                            placeholder={`Enter your ${provider === 'openai' ? 'OpenAI' : 'OpenRouter'} API key`}
-                            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/30"
-                        />
-                        <div className="text-[11px] text-text-secondary flex items-center gap-2">
+                        <div className="relative flex-1">
+                            <input
+                                ref={apiInputRef}
+                                type={showApiKey ? 'text' : 'password'}
+                                value={apiKey}
+                                onChange={(e) => setApiKey(e.target.value)}
+                                placeholder={`Enter your ${provider === 'openai' ? 'OpenAI' : 'OpenRouter'} API key`}
+                                aria-label={`${provider === 'openai' ? 'OpenAI' : 'OpenRouter'} API Key`}
+                                className="w-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/30 transition-all placeholder:text-white/20"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowApiKey(!showApiKey)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-white transition-colors p-1"
+                                aria-label={showApiKey ? "Hide API Key" : "Show API Key"}
+                            >
+                                {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
+                        </div>
+                        <div className="text-[11px] text-text-secondary flex items-center gap-2 md:pt-0 pt-2">
                             <span className={`w-2 h-2 rounded-full ${canStartRun ? 'bg-green-500' : 'bg-yellow-400'}`} />
                             {canStartRun ? 'Ready to synthesize' : 'Add a valid key to start'}
                         </div>
