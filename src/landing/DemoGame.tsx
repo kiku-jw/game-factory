@@ -80,7 +80,7 @@ export function DemoGame() {
             setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] SUCCESS: ${name}`]);
             return res;
         };
-        (window as any).openai = driver;
+        (window as unknown as { openai: typeof driver }).openai = driver;
     }, [driver]);
 
     const canStartRun = apiKey.trim().length > 0;
@@ -167,10 +167,8 @@ export function DemoGame() {
                                     canStart={canStartRun}
                                     provider={provider}
                                     onMissingKey={() => apiInputRef.current?.focus()}
-                                    onStartRun={(res) => {
-                                        if (res && (res as any).continue) {
-                                            // Handle resume if needed
-                                        }
+                                    onStartRun={(_res) => {
+                                        // Handle resume if needed
                                     }}
                                 />
                             )}

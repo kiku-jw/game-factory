@@ -40,12 +40,13 @@ export function ConsequenceCard({
         clientTurn: turn,
       });
 
-      const outcome = (result.structuredContent as any)?.outcome;
+      const content = result.structuredContent as { outcome?: string; turn?: number };
+      const outcome = content?.outcome;
       if (outcome === 'run_ended') {
         onRunEnded(result);
       } else {
         await window.openai.setWidgetState({
-          lastKnownTurn: (result.structuredContent as any)?.turn || turn + 1,
+          lastKnownTurn: content?.turn || turn + 1,
         });
         onConsequenceResolved(result);
       }

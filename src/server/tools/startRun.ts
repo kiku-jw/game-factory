@@ -127,14 +127,14 @@ export function handleStartRun(input: unknown): {
   };
 
   // Build _meta (rich, for widget only)
-  const templateMap: Record<GameFormat, string> = {
+  const templateMap: Record<GameFormat, StartRunMeta['openai/outputTemplate']> = {
     quest: 'SceneCard',
     arcade: 'ArcadeCard',
     puzzle: 'PuzzleCard',
   };
 
   const _meta: StartRunMeta = {
-    'openai/outputTemplate': (templateMap[state.settings.format] || 'SceneCard') as any,
+    'openai/outputTemplate': templateMap[state.settings.format] ?? 'SceneCard',
     runRef: state.runRef,
     seed: state.seed,
     narrative: state.currentScene.narrative,
