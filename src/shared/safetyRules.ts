@@ -110,7 +110,7 @@ export function validateContent(content: string): ValidationResult {
  * Strips potential prompt injection and forbidden content
  */
 export function sanitizeUserInput(input: string, maxLength = 200): string {
-  return input
+  const sanitized = input
     // Remove potential injection patterns
     .replace(/\[.*?\]/g, '')      // [brackets]
     .replace(/\{.*?\}/g, '')      // {braces}
@@ -123,6 +123,14 @@ export function sanitizeUserInput(input: string, maxLength = 200): string {
     // Limit length
     .slice(0, maxLength)
     .trim();
+
+  // Validate content against forbidden keywords
+  const validation = validateContent(sanitized);
+  if (!validation.valid) {
+    throw new Error(`Input contains forbidden content: ${validation.flaggedKeyword}`);
+  }
+
+  return sanitized;
 }
 
 /**
